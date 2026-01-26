@@ -1,0 +1,369 @@
+{
+  "form_type": "Form1040",
+  "form_name": "U.S. Individual Income Tax Return",
+  "irs_form_number": "1040",
+  "min_year": 2025,
+  "max_year": null,
+  "description": "Form 1040 is used by U.S. taxpayers to file an annual income tax return.",
+  "lines": [
+    {
+      "line_id": "1a",
+      "label": "Total amount from Form(s) W-2, box 1",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "source": "Sum of all W-2 Box 1 amounts"
+    },
+    {
+      "line_id": "1b",
+      "label": "Household employee wages not reported on Form(s) W-2",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "1c",
+      "label": "Tip income not reported on line 1a",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "1d",
+      "label": "Medicaid waiver payments not reported on Form(s) W-2",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "1e",
+      "label": "Taxable dependent care benefits from Form 2441, line 26",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "1f",
+      "label": "Employer-provided adoption benefits from Form 8839, line 29",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "1g",
+      "label": "Wages from Form 8919, line 6",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "1h",
+      "label": "Other earned income",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "1i",
+      "label": "Nontaxable combat pay election",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "1z",
+      "label": "Add lines 1a through 1h",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "sum(1a, 1b, 1c, 1d, 1e, 1f, 1g, 1h)"
+    },
+    {
+      "line_id": "2a",
+      "label": "Tax-exempt interest",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "notes": "Not included in total income"
+    },
+    {
+      "line_id": "2b",
+      "label": "Taxable interest",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "source": "Sum of all 1099-INT Box 1 amounts"
+    },
+    {
+      "line_id": "3a",
+      "label": "Qualified dividends",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "source": "Sum of all 1099-DIV Box 1b amounts"
+    },
+    {
+      "line_id": "3b",
+      "label": "Ordinary dividends",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "source": "Sum of all 1099-DIV Box 1a amounts"
+    },
+    {
+      "line_id": "4a",
+      "label": "IRA distributions",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "4b",
+      "label": "Taxable amount",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "5a",
+      "label": "Pensions and annuities",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "5b",
+      "label": "Taxable amount",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "6a",
+      "label": "Social security benefits",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "6b",
+      "label": "Taxable amount",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "7",
+      "label": "Capital gain or (loss)",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "source": "Schedule D or Form 1040, line 7 worksheet"
+    },
+    {
+      "line_id": "8",
+      "label": "Additional income from Schedule 1, line 10",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "9",
+      "label": "Total income",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "sum(1z, 2b, 3b, 4b, 5b, 6b, 7, 8)"
+    },
+    {
+      "line_id": "10",
+      "label": "Adjustments to income from Schedule 1, line 26",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "11",
+      "label": "Adjusted gross income",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "line_9 - line_10"
+    },
+    {
+      "line_id": "12",
+      "label": "Standard deduction or itemized deductions",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "13a",
+      "label": "Qualified business income deduction",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "13b",
+      "label": "Total other deductions from Schedule 1-A, line 38",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "notes": "Includes tips, overtime, car loan interest, senior deductions under OBBBA"
+    },
+    {
+      "line_id": "14",
+      "label": "Total deductions",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "sum(12, 13a, 13b)"
+    },
+    {
+      "line_id": "15",
+      "label": "Taxable income",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "max(0, line_11 - line_14)"
+    },
+    {
+      "line_id": "16",
+      "label": "Tax",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "notes": "From Tax Table or Tax Computation Worksheet"
+    },
+    {
+      "line_id": "17",
+      "label": "Amount from Schedule 2, line 3",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "18",
+      "label": "Add lines 16 and 17",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "line_16 + line_17"
+    },
+    {
+      "line_id": "19",
+      "label": "Child tax credit or credit for other dependents from Schedule 8812",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "20",
+      "label": "Amount from Schedule 3, line 8",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "21",
+      "label": "Add lines 19 and 20",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "line_19 + line_20"
+    },
+    {
+      "line_id": "22",
+      "label": "Subtract line 21 from line 18",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "max(0, line_18 - line_21)"
+    },
+    {
+      "line_id": "23",
+      "label": "Other taxes from Schedule 2, line 21",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "24",
+      "label": "Total tax",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "line_22 + line_23"
+    },
+    {
+      "line_id": "25a",
+      "label": "Federal income tax withheld from Form(s) W-2",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "25b",
+      "label": "Federal income tax withheld from Form(s) 1099",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "25c",
+      "label": "Other withholding",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "25d",
+      "label": "Add lines 25a through 25c",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "sum(25a, 25b, 25c)"
+    },
+    {
+      "line_id": "26",
+      "label": "Estimated tax payments",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "27a",
+      "label": "Earned income credit (EIC)",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "28",
+      "label": "Additional child tax credit from Schedule 8812",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "29",
+      "label": "American opportunity credit from Form 8863, line 8",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "30",
+      "label": "Reserved for future use",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "31",
+      "label": "Amount from Schedule 3, line 15",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "32",
+      "label": "Add lines 27a and 28 through 31",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "sum(27a, 28, 29, 30, 31)"
+    },
+    {
+      "line_id": "33",
+      "label": "Total payments",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "sum(25d, 26, 32)"
+    },
+    {
+      "line_id": "34",
+      "label": "If line 33 is more than line 24, subtract line 24 from line 33",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "if line_33 > line_24 then line_33 - line_24 else 0"
+    },
+    {
+      "line_id": "35a",
+      "label": "Amount of line 34 you want refunded to you",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "line_34 - line_36"
+    },
+    {
+      "line_id": "36",
+      "label": "Amount of line 34 you want applied to your estimated tax",
+      "value_type": "currency",
+      "introduced_year": 2025
+    },
+    {
+      "line_id": "37",
+      "label": "Amount you owe",
+      "value_type": "currency",
+      "introduced_year": 2025,
+      "calculation": "if line_24 > line_33 then line_24 - line_33 + line_38 else 0"
+    },
+    {
+      "line_id": "38",
+      "label": "Estimated tax penalty",
+      "value_type": "currency",
+      "introduced_year": 2025
+    }
+  ]
+}

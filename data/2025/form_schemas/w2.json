@@ -1,0 +1,153 @@
+{
+  "form_type": "W2",
+  "form_name": "Wage and Tax Statement",
+  "irs_form_number": "W-2",
+  "min_year": 2025,
+  "max_year": null,
+  "description": "Form W-2 reports wages paid to employees and the taxes withheld from them.",
+  "fields": [
+    {
+      "field_id": "box_a",
+      "label": "Employee's social security number",
+      "value_type": "text",
+      "required": true
+    },
+    {
+      "field_id": "box_b",
+      "label": "Employer identification number (EIN)",
+      "value_type": "text",
+      "required": true
+    },
+    {
+      "field_id": "box_c",
+      "label": "Employer's name, address, and ZIP code",
+      "value_type": "text",
+      "required": true
+    },
+    {
+      "field_id": "box_1",
+      "label": "Wages, tips, other compensation",
+      "value_type": "currency",
+      "required": true,
+      "maps_to_1040": "1a"
+    },
+    {
+      "field_id": "box_2",
+      "label": "Federal income tax withheld",
+      "value_type": "currency",
+      "required": true,
+      "maps_to_1040": "25a"
+    },
+    {
+      "field_id": "box_3",
+      "label": "Social security wages",
+      "value_type": "currency",
+      "required": true
+    },
+    {
+      "field_id": "box_4",
+      "label": "Social security tax withheld",
+      "value_type": "currency",
+      "required": true
+    },
+    {
+      "field_id": "box_5",
+      "label": "Medicare wages and tips",
+      "value_type": "currency",
+      "required": true
+    },
+    {
+      "field_id": "box_6",
+      "label": "Medicare tax withheld",
+      "value_type": "currency",
+      "required": true
+    },
+    {
+      "field_id": "box_7",
+      "label": "Social security tips",
+      "value_type": "currency",
+      "required": false
+    },
+    {
+      "field_id": "box_8",
+      "label": "Allocated tips",
+      "value_type": "currency",
+      "required": false
+    },
+    {
+      "field_id": "box_10",
+      "label": "Dependent care benefits",
+      "value_type": "currency",
+      "required": false,
+      "maps_to_1040": "1e",
+      "notes": "Only taxable portion flows to 1040"
+    },
+    {
+      "field_id": "box_11",
+      "label": "Nonqualified plans",
+      "value_type": "currency",
+      "required": false
+    },
+    {
+      "field_id": "box_12",
+      "label": "Codes and amounts",
+      "value_type": "array",
+      "required": false,
+      "notes": "Array of {code, amount} pairs. Codes A-HH represent various compensation types."
+    },
+    {
+      "field_id": "box_13_statutory",
+      "label": "Statutory employee",
+      "value_type": "boolean",
+      "required": false
+    },
+    {
+      "field_id": "box_13_retirement",
+      "label": "Retirement plan",
+      "value_type": "boolean",
+      "required": false
+    },
+    {
+      "field_id": "box_13_sick_pay",
+      "label": "Third-party sick pay",
+      "value_type": "boolean",
+      "required": false
+    },
+    {
+      "field_id": "box_15",
+      "label": "State/Employer's state ID number",
+      "value_type": "text",
+      "required": false
+    },
+    {
+      "field_id": "box_16",
+      "label": "State wages, tips, etc.",
+      "value_type": "currency",
+      "required": false
+    },
+    {
+      "field_id": "box_17",
+      "label": "State income tax",
+      "value_type": "currency",
+      "required": false
+    },
+    {
+      "field_id": "box_18",
+      "label": "Local wages, tips, etc.",
+      "value_type": "currency",
+      "required": false
+    },
+    {
+      "field_id": "box_19",
+      "label": "Local income tax",
+      "value_type": "currency",
+      "required": false
+    },
+    {
+      "field_id": "box_20",
+      "label": "Locality name",
+      "value_type": "text",
+      "required": false
+    }
+  ]
+}
