@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = ["crates/honest-tax-core"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/gideonsolutions/honest-tax"
+
+[workspace.dependencies]
+rust_decimal = { version = "1.36", features = ["serde"] }
+rust_decimal_macros = "1.36"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
