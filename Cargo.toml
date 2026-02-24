@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/gideon-tax-core", "crates/gideon-tax-form"]
+members = ["crates/gideon-tax-core"]
 
 [workspace.package]
 version = "0.1.0"
