@@ -1,0 +1,28 @@
+mod core_1099_b;
+mod core_1099_div;
+mod core_1099_g;
+mod core_1099_int;
+mod core_1099_k;
+mod core_1099_misc;
+mod core_1099_nec;
+mod core_1099_oid;
+mod core_1099_patr;
+mod core_1099_r;
+mod core_w2;
+mod core_w2g;
+mod state_local;
+
+pub use core_1099_b::Core1099B;
+pub use core_1099_div::Core1099Div;
+pub use core_1099_g::Core1099G;
+pub use core_1099_int::Core1099Int;
+pub use core_1099_k::Core1099K;
+pub use core_1099_misc::Core1099Misc;
+pub use core_1099_nec::Core1099Nec;
+pub use core_1099_oid::Core1099Oid;
+pub use core_1099_patr::Core1099Patr;
+pub use core_1099_r::Core1099R;
+pub use core_w2::CoreW2;
+pub use core_w2g::CoreW2G;
+pub use state_local::StateLocalTax;
+pub use state_local::StateTax;
