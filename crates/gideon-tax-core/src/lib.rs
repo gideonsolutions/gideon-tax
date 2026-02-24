@@ -14,5 +14,6 @@ pub use output::{
     OutputScheduleE, OutputScheduleF, OutputScheduleH, OutputScheduleJ, OutputScheduleR,
     OutputScheduleSe,
 };
+pub use spine::{ReturnInput, SpineError, SpineOutput, compute_spine};
 pub use types::Filer;
 pub use types::Usd;
