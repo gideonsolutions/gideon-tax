@@ -34,6 +34,15 @@ pub trait TaxYearRules {
     /// Minimum standard deduction for a dependent filer.
     fn dependent_minimum_deduction(&self) -> Usd;
 
+    /// Maximum wages and tips subject to social security tax (wage base).
+    fn social_security_wage_base(&self) -> Usd;
+
+    /// Social security tax rate as basis points (e.g. 620 = 6.20%).
+    fn social_security_rate_bps(&self) -> u16;
+
+    /// Medicare tax rate as basis points (e.g. 145 = 1.45%).
+    fn medicare_rate_bps(&self) -> u16;
+
     /// Base standard deduction before any age/blindness additions.
     fn typical_standard_deduction(&self, status: FilingStatus) -> Usd {
         use FilingStatus::*;
