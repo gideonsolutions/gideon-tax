@@ -40,6 +40,18 @@ impl TaxYearRules for Rules2025 {
     fn dependent_minimum_deduction(&self) -> Usd {
         Usd::from_dollars(1_350)
     }
+
+    fn social_security_wage_base(&self) -> Usd {
+        Usd::from_dollars(176_100)
+    }
+
+    fn social_security_rate_bps(&self) -> u16 {
+        620
+    }
+
+    fn medicare_rate_bps(&self) -> u16 {
+        145
+    }
 }
 
 #[cfg(test)]
