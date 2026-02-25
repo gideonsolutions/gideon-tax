@@ -76,10 +76,8 @@ pub struct Input1041ScheduleK1 {
     pub other_rental_income_amt: Usd,
     // Line 9: Directly apportioned deductions
     // (see attached statement for codes and amounts)
-
     /// Line 10: Estate tax deduction
     pub estate_tax_deduction_amt: Usd,
-
     // Line 11: Final year deductions
     // (see attached statement for codes and amounts)
 

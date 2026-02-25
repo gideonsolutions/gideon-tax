@@ -158,7 +158,6 @@ pub struct Input1065ScheduleK1 {
 
     // Line 15: Credits
     // (see attached statement for codes and amounts)
-
     /// Line 16: Schedule K-3 is attached if checked
     pub schedule_k3_attached_ind: bool,
 
@@ -173,7 +172,6 @@ pub struct Input1065ScheduleK1 {
 
     // Line 20: Other information
     // (see attached statement for codes and amounts)
-
     /// Line 21: Foreign taxes paid or accrued
     pub total_foreign_taxes_paid_or_accr_amt: Usd,
     /// Line 22: More than one activity for at-risk purposes

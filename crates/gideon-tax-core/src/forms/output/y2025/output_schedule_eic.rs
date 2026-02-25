@@ -6,7 +6,6 @@ pub struct OutputScheduleEic {
     // -----------------------------------------------------------------------
     // Line 1: Child's name (first and last)
     // (This is not a separate field; the child is identified by qualifying_child_ssn)
-
     /// Line 2: Child's SSN (The child must have an SSN as defined in the instructions for
     /// Form 1040, line 27a, unless the child was born and died in 2025)
     pub qualifying_child_ssn: String,
