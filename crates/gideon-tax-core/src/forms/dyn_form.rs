@@ -9,6 +9,10 @@ pub enum DynForm {
     // ── Input forms ──
     W2,
     W2G,
+    F1098,
+    F1098C,
+    F1098E,
+    F1098T,
     F1099B,
     F1099Div,
     F1099G,
@@ -19,6 +23,9 @@ pub enum DynForm {
     F1099Oid,
     F1099Patr,
     F1099R,
+    F1041ScheduleK1,
+    F1065ScheduleK1,
+    F1120SScheduleK1,
 
     // ── Output forms: 1040 series ──
     F1040,
@@ -42,12 +49,6 @@ pub enum DynForm {
     ScheduleOi,
     ScheduleR,
     ScheduleSe,
-
-    // ── Input forms: K-1 schedules ──
-    F1041ScheduleK1,
-    F1065ScheduleK1,
-    F1120SScheduleK1,
-
     // ── Output forms: numbered forms ──
     F1042S,
     F1116,
@@ -125,6 +126,10 @@ impl DynForm {
             | Self::F1099Oid
             | Self::F1099Patr
             | Self::F1099R
+            | Self::F1098
+            | Self::F1098C
+            | Self::F1098E
+            | Self::F1098T
             | Self::F1041ScheduleK1
             | Self::F1065ScheduleK1
             | Self::F1120SScheduleK1 => FormType::Input,

@@ -5,7 +5,10 @@ pub mod output;
 
 pub use dyn_form::DynForm;
 pub use form::{Form, FormType};
-pub use input::{Input1041ScheduleK1, Input1065ScheduleK1, Input1120SScheduleK1, InputForm};
+pub use input::{
+    Input1041ScheduleK1, Input1065ScheduleK1, Input1098, Input1098C, Input1098E, Input1098T,
+    Input1120SScheduleK1, InputForm,
+};
 pub use output::{
     Output965A, Output1040, Output1040Nr, Output1040Sr, Output1042S, Output1116, Output2106,
     Output2439, Output2441, Output2555, Output3800, Output3903, Output4136, Output4137, Output4255,
