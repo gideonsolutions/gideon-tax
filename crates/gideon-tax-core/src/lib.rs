@@ -1,9 +1,11 @@
+pub mod error;
 pub mod forms;
 pub mod input;
 pub mod rules;
 pub mod spine;
 pub mod types;
 
+pub use error::GideonTaxError;
 pub use forms::{
     DynForm, F4137Input, F4137Line1, Form, FormType, Input1041ScheduleK1, Input1065ScheduleK1,
     Input1098, Input1098C, Input1098E, Input1098T, Input1099B, Input1099Div, Input1099G,
