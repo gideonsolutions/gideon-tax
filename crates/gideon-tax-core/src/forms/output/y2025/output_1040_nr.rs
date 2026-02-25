@@ -2,14 +2,82 @@ use crate::Usd;
 
 /// Output fields for IRS Form 1040-NR (2025), U.S. Nonresident Alien Income Tax Return.
 ///
-/// Fields are ordered by line number as they appear on the form.
-/// Only includes fields relevant to tax computation; excludes names, addresses,
-/// SSNs, EINs, and preparer metadata.
+/// Fields are ordered by section and line number as they appear on the form.
+/// Field names and types follow the IRS e-file schema (`irs-form-schema`).
 #[derive(Debug, Clone, Default)]
 pub struct Output1040Nr {
-    // -----------------------------------------------------------------------
+    // =====================================================================
+    // Header — Filed Pursuant, Combat Zone, Deceased
+    // =====================================================================
+    /// Filed pursuant to section 301.9100-2 indicator
+    pub filed_pursuant_to_sect_3019_1002_ind: bool,
+
+    /// Combat zone indicator
+    pub combat_zone_ind: bool,
+
+    /// Combat zone code
+    pub combat_zone_cd: String,
+
+    /// Combat zone date
+    pub combat_zone_dt: String,
+
+    /// Combat zone text
+    pub combat_zone_txt: String,
+
+    /// Deceased indicator
+    pub deceased_ind: bool,
+
+    /// Primary date of death (MM/DD/YYYY)
+    pub primary_death_dt: String,
+
+    /// Spouse date of death (MM/DD/YYYY)
+    pub spouse_death_dt: String,
+
+    // =====================================================================
+    // Header — Names & Identifying Numbers
+    // =====================================================================
+    /// Your first name and middle initial
+    pub primary_first_nm: String,
+
+    /// Your last name
+    pub primary_last_nm: String,
+
+    /// Your identifying number (see instructions)
+    pub primary_ssn: String,
+
+    /// Spouse name
+    pub spouse_nm: String,
+
+    // =====================================================================
+    // Header — Home Address
+    // =====================================================================
+    /// Home address (number and street). If you have a P.O. box, see instructions
+    pub address_line_1_txt: String,
+
+    /// Apt. no.
+    pub address_line_2_txt: String,
+
+    /// City, town, or post office
+    pub city_nm: String,
+
+    /// State
+    pub state_abbreviation_cd: String,
+
+    /// ZIP code
+    pub zip_cd: String,
+
+    /// Foreign country name
+    pub foreign_country_nm: String,
+
+    /// Foreign province/state/county
+    pub foreign_province_or_state_nm: String,
+
+    /// Foreign postal code
+    pub foreign_postal_cd: String,
+
+    // =====================================================================
     // Filing Status
-    // -----------------------------------------------------------------------
+    // =====================================================================
     /// Filing Status: check only one box (1 = Single, 3 = Married filing separately (MFS),
     /// 5 = Qualifying surviving spouse (QSS), 6 = Estate, 7 = Trust)
     pub individual_return_filing_status_cd: u8,
@@ -35,24 +103,6 @@ pub struct Output1040Nr {
 
     /// Estate or trust indicator
     pub estate_or_trust_ind: bool,
-
-    // -----------------------------------------------------------------------
-    // Header checkboxes
-    // -----------------------------------------------------------------------
-    /// Filed pursuant to section 301.9100-2
-    pub filed_pursuant_to_sect_3019_1002_ind: bool,
-
-    /// Deceased indicator
-    pub deceased_ind: bool,
-
-    /// Primary date of death
-    pub primary_death_dt: String,
-
-    /// Spouse date of death
-    pub spouse_death_dt: String,
-
-    /// Spouse name
-    pub spouse_nm: String,
 
     /// Community property state return indicator
     pub comm_prop_state_rtn_ind: bool,
@@ -445,18 +495,6 @@ pub struct Output1040Nr {
 
     /// Protective return indicator
     pub protective_return_ind: bool,
-
-    /// Combat zone indicator
-    pub combat_zone_ind: bool,
-
-    /// Combat zone code
-    pub combat_zone_cd: String,
-
-    /// Combat zone date
-    pub combat_zone_dt: String,
-
-    /// Combat zone text
-    pub combat_zone_txt: String,
 
     /// Expatriation code
     pub expatriation_cd: String,
