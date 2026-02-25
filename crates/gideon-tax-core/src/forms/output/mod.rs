@@ -1,6 +1,7 @@
 mod output_1040;
 mod output_1040_nr;
 mod output_1040_sr;
+mod output_form;
 mod output_schedule_1;
 mod output_schedule_1a;
 mod output_schedule_2;
@@ -19,6 +20,7 @@ mod output_schedule_se;
 pub use output_1040::Output1040;
 pub use output_1040_nr::Output1040Nr;
 pub use output_1040_sr::Output1040Sr;
+pub use output_form::OutputForm;
 pub use output_schedule_1::OutputSchedule1;
 pub use output_schedule_1a::OutputSchedule1A;
 pub use output_schedule_2::OutputSchedule2;
