@@ -7,7 +7,8 @@ pub use dyn_form::DynForm;
 pub use form::{Form, FormType};
 pub use input::{
     Input1041ScheduleK1, Input1065ScheduleK1, Input1098, Input1098C, Input1098E, Input1098T,
-    Input1120SScheduleK1, InputForm,
+    Input1099B, Input1099Div, Input1099G, Input1099Int, Input1099K, Input1099Misc, Input1099Nec,
+    Input1099Oid, Input1099Patr, Input1099R, Input1120SScheduleK1, InputForm, InputW2, InputW2G,
 };
 pub use output::{
     Output965A, Output1040, Output1040Nr, Output1040Sr, Output1042S, Output1116, Output2106,

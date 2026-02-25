@@ -1,4 +1,7 @@
+use us_tax_brackets::TaxYear;
+
 use crate::Usd;
+use crate::forms::{Form, FormType, InputForm};
 
 /// Input fields for IRS Schedule K-1 (Form 1065) 2025 — Partner's Share of Income, Deductions, Credits, etc.
 #[derive(Debug, Clone, Default)]
@@ -181,3 +184,19 @@ pub struct Input1065ScheduleK1 {
     /// Section 1377(a)(2) indicator
     pub sect1377a2_indicator: bool,
 }
+
+impl Form for Input1065ScheduleK1 {
+    fn name() -> &'static str {
+        "Schedule K-1 (Form 1065)"
+    }
+
+    fn year(&self) -> TaxYear {
+        TaxYear::Y2025
+    }
+
+    fn form_type() -> FormType {
+        FormType::Input
+    }
+}
+
+impl InputForm for Input1065ScheduleK1 {}

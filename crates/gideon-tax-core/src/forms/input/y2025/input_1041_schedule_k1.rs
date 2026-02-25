@@ -1,4 +1,7 @@
+use us_tax_brackets::TaxYear;
+
 use crate::Usd;
+use crate::forms::{Form, FormType, InputForm};
 
 /// Input fields for IRS Schedule K-1 (Form 1041) 2025 — Beneficiary's Share of Income, Deductions, Credits, etc.
 #[derive(Debug, Clone, Default)]
@@ -90,3 +93,19 @@ pub struct Input1041ScheduleK1 {
     // Line 14: Other information
     // (see attached statement for codes and amounts)
 }
+
+impl Form for Input1041ScheduleK1 {
+    fn name() -> &'static str {
+        "Schedule K-1 (Form 1041)"
+    }
+
+    fn year(&self) -> TaxYear {
+        TaxYear::Y2025
+    }
+
+    fn form_type() -> FormType {
+        FormType::Input
+    }
+}
+
+impl InputForm for Input1041ScheduleK1 {}
