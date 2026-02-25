@@ -1,4 +1,4 @@
-use super::form::{Form, FormType};
+use super::super::form::{Form, FormType};
 
 /// A [`Form`] whose `form_type()` is [`FormType::Input`].
 ///
