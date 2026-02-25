@@ -20,7 +20,7 @@ pub enum DynForm {
     F1099Patr,
     F1099R,
 
-    // ── Output forms ──
+    // ── Output forms: 1040 series ──
     F1040,
     F1040Nr,
     F1040Sr,
@@ -28,16 +28,85 @@ pub enum DynForm {
     Schedule1A,
     Schedule2,
     Schedule3,
+    Schedule8812,
     ScheduleA,
     ScheduleB,
     ScheduleC,
     ScheduleD,
     ScheduleE,
+    ScheduleEic,
     ScheduleF,
     ScheduleH,
     ScheduleJ,
+    ScheduleNec,
+    ScheduleOi,
     ScheduleR,
     ScheduleSe,
+
+    // ── Input forms: K-1 schedules ──
+    F1041ScheduleK1,
+    F1065ScheduleK1,
+    F1120SScheduleK1,
+
+    // ── Output forms: numbered forms ──
+    F1042S,
+    F1116,
+    F2106,
+    F2439,
+    F2441,
+    F2555,
+    F3800,
+    F3903,
+    F4136,
+    F4137,
+    F4255,
+    F4562,
+    F4563,
+    F4684,
+    F4797,
+    F4835,
+    F4952,
+    F4972,
+    F5329,
+    F5695,
+    F6198,
+    F6251,
+    F6252,
+    F6781,
+    F8288A,
+    F8396,
+    F8582,
+    F8611,
+    F8621,
+    F8689,
+    F8697,
+    F8801,
+    F8805,
+    F8814,
+    F8815,
+    F8824,
+    F8829,
+    F8834,
+    F8839,
+    F8853,
+    F8859,
+    F8863,
+    F8866,
+    F8880,
+    F8888,
+    F8889,
+    F8912,
+    F8919,
+    F8936,
+    F8936ScheduleA,
+    F8949,
+    F8959,
+    F8960,
+    F8962,
+    F8978,
+    F8995,
+    F8995A,
+    F965A,
 }
 
 impl DynForm {
@@ -55,25 +124,12 @@ impl DynForm {
             | Self::F1099Nec
             | Self::F1099Oid
             | Self::F1099Patr
-            | Self::F1099R => FormType::Input,
+            | Self::F1099R
+            | Self::F1041ScheduleK1
+            | Self::F1065ScheduleK1
+            | Self::F1120SScheduleK1 => FormType::Input,
 
-            Self::F1040
-            | Self::F1040Nr
-            | Self::F1040Sr
-            | Self::Schedule1
-            | Self::Schedule1A
-            | Self::Schedule2
-            | Self::Schedule3
-            | Self::ScheduleA
-            | Self::ScheduleB
-            | Self::ScheduleC
-            | Self::ScheduleD
-            | Self::ScheduleE
-            | Self::ScheduleF
-            | Self::ScheduleH
-            | Self::ScheduleJ
-            | Self::ScheduleR
-            | Self::ScheduleSe => FormType::Output,
+            _ => FormType::Output,
         }
     }
 }
