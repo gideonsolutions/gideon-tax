@@ -7,7 +7,7 @@ pub mod types;
 
 pub use error::GideonTaxError;
 pub use forms::{
-    DynForm, F4137Input, F4137Line1, F8919Input, F8919Lines1To5, F8919ReasonCode, Form, FormType,
+    DynForm, F3903Input, F4137Input, F4137Line1, F8919Input, F8919Lines1To5, F8919ReasonCode, Form, FormType,
     Input1041ScheduleK1, Input1065ScheduleK1, Input1098, Input1098C, Input1098E, Input1098T,
     Input1099B, Input1099Div, Input1099G, Input1099Int, Input1099K, Input1099Misc, Input1099Nec,
     Input1099Oid, Input1099Patr, Input1099R, Input1120SScheduleK1, InputForm, InputW2, InputW2G,
