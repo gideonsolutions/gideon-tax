@@ -4,6 +4,26 @@ use crate::forms::{DynForm, Form, FormType, OutputForm};
 use crate::{GideonTaxError, Usd};
 
 // =========================================================================
+// Line 1 row
+// =========================================================================
+
+/// Per-entry row from Form 8815, Line 1 (columns a–b).
+///
+/// Each row identifies one person who was enrolled at or attended an
+/// eligible educational institution, along with the institution's name
+/// and address.
+#[derive(Debug, Clone)]
+pub struct F8815Line1 {
+    /// Column (a): Name of person who was enrolled at or attended an
+    /// eligible educational institution
+    pub eligible_person_nm: String,
+    /// Column (b): Name of eligible educational institution
+    pub eligible_institution_nm: String,
+    /// Column (b): Address of eligible educational institution
+    pub eligible_institution_address: String,
+}
+
+// =========================================================================
 // Input
 // =========================================================================
 
@@ -15,32 +35,11 @@ use crate::{GideonTaxError, Usd};
 #[derive(Debug, Clone)]
 pub struct F8815Input {
     // -----------------------------------------------------------------------
-    // Line 1 — Eligible persons and institutions (passthrough)
+    // Line 1 — Eligible persons and institutions
     // -----------------------------------------------------------------------
-    /// Line 1(a): Name of person who was enrolled at or attended an eligible educational institution
-    pub eligible_person_nm: String,
-    /// Line 1(b): Name of eligible educational institution
-    pub eligible_institution_nm: String,
-    /// Line 1(b): Address line 1 of eligible educational institution
-    pub address_line1_txt: String,
-    /// Line 1(b): Address line 2 of eligible educational institution
-    pub address_line2_txt: String,
-    /// Line 1(b): City of eligible educational institution
-    pub city_nm: String,
-    /// Line 1(b): State abbreviation of eligible educational institution
-    pub state_abbreviation_cd: String,
-    /// Line 1(b): ZIP code of eligible educational institution
-    pub zip_cd: String,
-    /// Line 1(b): Country code (foreign address)
-    pub country_cd: String,
-    /// Line 1(b): Province or state name (foreign address)
-    pub province_or_state_nm: String,
-    /// Line 1(b): Foreign postal code
-    pub foreign_postal_cd: String,
-    /// Coverdell educational savings account code
-    pub coverdell_educational_sav_acct_cd: String,
-    /// Qualified tuition program code
-    pub qualified_tuition_program_cd: String,
+    /// Line 1: Persons enrolled at or attending eligible educational
+    /// institutions.  The IRS form provides space for multiple rows.
+    pub line1: Vec<F8815Line1>,
 
     // -----------------------------------------------------------------------
     // Lines 2-14 — Exclusion computation inputs
@@ -52,8 +51,20 @@ pub struct F8815Input {
     /// Line 5: Total proceeds (principal + interest) from all series EE and I
     /// U.S. savings bonds issued after 1989 that were cashed during the tax year
     pub total_bond_proceeds_amt: Usd,
-    /// Line 6: Interest included in Line 5
-    pub bond_interest_amt: Usd,
+
+    // -- Line 6 Worksheet components (used to compute Form 8815 line 6) --
+    /// Face value of post-1989 paper series EE bonds cashed in the tax year.
+    /// The purchase price (principal) is 50% of face value.
+    pub paper_ee_face_value_amt: Usd,
+    /// Face value of electronic series EE bonds (including post-1989 paper
+    /// series EE bonds converted to electronic format) cashed in the tax year
+    pub electronic_ee_face_value_amt: Usd,
+    /// Face value of series I bonds cashed in the tax year
+    pub series_i_face_value_amt: Usd,
+    /// Interest from the cashed bonds that was reported as income in
+    /// previous tax years (Line 6 Worksheet, line 7). Zero if none.
+    pub prior_year_interest_reported_amt: Usd,
+
     /// Line 9: Modified adjusted gross income
     pub modified_agi_amt: Usd,
     /// Line 10: Filing status limit amount ($99,500 if single/HOH/QSS;
@@ -69,35 +80,14 @@ pub struct F8815Input {
 // =========================================================================
 
 /// Output fields for IRS Form 8815 (2025) — Exclusion of Interest From Series EE and I U.S. Savings Bonds Issued After 1989.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct Output8815 {
     // -----------------------------------------------------------------------
     // Line 1 — Eligible persons and institutions
     // -----------------------------------------------------------------------
-    /// Line 1(a): Name of person who was enrolled at or attended an eligible educational institution
-    pub eligible_person_nm: String,
-    /// Line 1(b): Name of eligible educational institution
-    pub eligible_institution_nm: String,
-    /// Line 1(b): Address line 1 of eligible educational institution
-    pub address_line1_txt: String,
-    /// Line 1(b): Address line 2 of eligible educational institution
-    pub address_line2_txt: String,
-    /// Line 1(b): City of eligible educational institution
-    pub city_nm: String,
-    /// Line 1(b): State abbreviation of eligible educational institution
-    pub state_abbreviation_cd: String,
-    /// Line 1(b): ZIP code of eligible educational institution
-    pub zip_cd: String,
-    /// Line 1(b): Country code (foreign address)
-    pub country_cd: String,
-    /// Line 1(b): Province or state name (foreign address)
-    pub province_or_state_nm: String,
-    /// Line 1(b): Foreign postal code
-    pub foreign_postal_cd: String,
-    /// Coverdell educational savings account code
-    pub coverdell_educational_sav_acct_cd: String,
-    /// Qualified tuition program code
-    pub qualified_tuition_program_cd: String,
+    /// Line 1: Persons enrolled at or attending eligible educational
+    /// institutions
+    pub line1: Vec<F8815Line1>,
 
     // -----------------------------------------------------------------------
     // Lines 2-14 — Exclusion computation
@@ -158,21 +148,18 @@ impl OutputForm for Output8815 {
     type Input = F8815Input;
 
     fn must_file(input: &Self::Input) -> bool {
-        input.bond_interest_amt > Usd::ZERO
+        let paper_ee_principal =
+            Usd::from_cents(input.paper_ee_face_value_amt.cents() / 2);
+        let total_principal = paper_ee_principal
+            + input.electronic_ee_face_value_amt
+            + input.series_i_face_value_amt;
+        let interest = input.total_bond_proceeds_amt
+            - total_principal
+            - input.prior_year_interest_reported_amt;
+        interest > Usd::ZERO
     }
 
     fn try_new(input: Self::Input) -> Result<Self, GideonTaxError> {
-        if input.total_bond_proceeds_amt == Usd::ZERO && input.bond_interest_amt > Usd::ZERO {
-            return Err(GideonTaxError::OutOfBounds(
-                "bond_interest_amt is positive but total_bond_proceeds_amt is zero".to_string(),
-            ));
-        }
-        if input.bond_interest_amt > input.total_bond_proceeds_amt {
-            return Err(GideonTaxError::OutOfBounds(format!(
-                "bond_interest_amt ({}) exceeds total_bond_proceeds_amt ({})",
-                input.bond_interest_amt, input.total_bond_proceeds_amt,
-            )));
-        }
         if input.phaseout_range_amt == Usd::ZERO {
             return Err(GideonTaxError::OutOfBounds(
                 "phaseout_range_amt must be positive".to_string(),
@@ -191,8 +178,27 @@ impl OutputForm for Output8815 {
         // Line 5: total bond proceeds (passthrough)
         let line5 = input.total_bond_proceeds_amt;
 
-        // Line 6: interest included in line 5 (passthrough)
-        let line6 = input.bond_interest_amt;
+        // Line 6: computed via Line 6 Worksheet
+        // WS line 3: paper EE principal = face value × 0.50
+        let paper_ee_principal =
+            Usd::from_cents(input.paper_ee_face_value_amt.cents() / 2);
+        // WS line 5: total principal (paper EE principal + electronic EE face + series I face)
+        let total_principal = paper_ee_principal
+            + input.electronic_ee_face_value_amt
+            + input.series_i_face_value_amt;
+        // WS line 6: proceeds − principal
+        let gross_interest = line5 - total_principal;
+        // WS line 8: subtract prior-year reported interest
+        let line6 = gross_interest - input.prior_year_interest_reported_amt;
+
+        if line6 < Usd::ZERO {
+            return Err(GideonTaxError::OutOfBounds(format!(
+                "computed bond interest ({line6}) is negative; \
+                 total_bond_proceeds_amt ({}) minus principal ({total_principal}) \
+                 minus prior_year_interest_reported_amt ({}) < 0",
+                line5, input.prior_year_interest_reported_amt,
+            )));
+        }
 
         // Line 7: ratio (stored as string)
         // If line4 >= line5, ratio is "1.000"; else ratio = line4 / line5
@@ -253,19 +259,7 @@ impl OutputForm for Output8815 {
         let line14 = line8 - line13;
 
         Ok(Output8815 {
-            // Line 1 passthrough
-            eligible_person_nm: input.eligible_person_nm,
-            eligible_institution_nm: input.eligible_institution_nm,
-            address_line1_txt: input.address_line1_txt,
-            address_line2_txt: input.address_line2_txt,
-            city_nm: input.city_nm,
-            state_abbreviation_cd: input.state_abbreviation_cd,
-            zip_cd: input.zip_cd,
-            country_cd: input.country_cd,
-            province_or_state_nm: input.province_or_state_nm,
-            foreign_postal_cd: input.foreign_postal_cd,
-            coverdell_educational_sav_acct_cd: input.coverdell_educational_sav_acct_cd,
-            qualified_tuition_program_cd: input.qualified_tuition_program_cd,
+            line1: input.line1,
 
             // Lines 2-14
             excl_bond_int_tot_qlfy_educ_expns_amt: line2,
@@ -346,25 +340,28 @@ impl OutputForm for Output8815 {
 mod tests {
     use super::*;
 
-    /// Helper: basic single-filer input with customizable amounts.
-    fn basic_input() -> F8815Input {
-        F8815Input {
+    fn make_line1() -> F8815Line1 {
+        F8815Line1 {
             eligible_person_nm: "Jane Doe".to_string(),
             eligible_institution_nm: "State University".to_string(),
-            address_line1_txt: "123 Campus Dr".to_string(),
-            address_line2_txt: String::new(),
-            city_nm: "Springfield".to_string(),
-            state_abbreviation_cd: "IL".to_string(),
-            zip_cd: "62701".to_string(),
-            country_cd: String::new(),
-            province_or_state_nm: String::new(),
-            foreign_postal_cd: String::new(),
-            coverdell_educational_sav_acct_cd: String::new(),
-            qualified_tuition_program_cd: String::new(),
+            eligible_institution_address: "123 Campus Dr, Springfield, IL 62701".to_string(),
+        }
+    }
+
+    /// Helper: basic single-filer input.
+    ///
+    /// Proceeds $20,000 with electronic EE face value $15,000 gives
+    /// line 6 interest = $5,000.
+    fn basic_input() -> F8815Input {
+        F8815Input {
+            line1: vec![make_line1()],
             qualified_higher_ed_expenses_amt: Usd::from_dollars(10_000),
             nontaxable_ed_benefits_amt: Usd::ZERO,
             total_bond_proceeds_amt: Usd::from_dollars(20_000),
-            bond_interest_amt: Usd::from_dollars(5_000),
+            paper_ee_face_value_amt: Usd::ZERO,
+            electronic_ee_face_value_amt: Usd::from_dollars(15_000),
+            series_i_face_value_amt: Usd::ZERO,
+            prior_year_interest_reported_amt: Usd::ZERO,
             modified_agi_amt: Usd::from_dollars(80_000),
             filing_status_limit_amt: Usd::from_dollars(99_500),
             phaseout_range_amt: Usd::from_dollars(15_000),
@@ -380,7 +377,8 @@ mod tests {
     #[test]
     fn must_file_no_interest() {
         let mut input = basic_input();
-        input.bond_interest_amt = Usd::ZERO;
+        // Set face value equal to proceeds so computed interest = 0
+        input.electronic_ee_face_value_amt = Usd::from_dollars(20_000);
         assert!(!Output8815::must_file(&input));
     }
 
@@ -553,7 +551,7 @@ mod tests {
     fn zero_bond_proceeds_zero_interest() {
         let mut input = basic_input();
         input.total_bond_proceeds_amt = Usd::ZERO;
-        input.bond_interest_amt = Usd::ZERO;
+        input.electronic_ee_face_value_amt = Usd::ZERO;
         let form = Output8815::try_new(input).unwrap();
         assert_eq!(form.excl_bond_int_tentative_bond_int_amt, Usd::ZERO);
         assert_eq!(form.excludable_savings_bond_int_amt, Usd::ZERO);
@@ -561,10 +559,19 @@ mod tests {
     }
 
     #[test]
-    fn interest_exceeds_proceeds_returns_error() {
+    fn principal_exceeds_proceeds_returns_error() {
         let mut input = basic_input();
-        input.bond_interest_amt = Usd::from_dollars(25_000);
-        input.total_bond_proceeds_amt = Usd::from_dollars(20_000);
+        // electronic EE face $25,000 > proceeds $20,000 => negative interest
+        input.electronic_ee_face_value_amt = Usd::from_dollars(25_000);
+        let err = Output8815::try_new(input).unwrap_err();
+        assert!(matches!(err, GideonTaxError::OutOfBounds(_)));
+    }
+
+    #[test]
+    fn prior_year_interest_exceeds_gross_returns_error() {
+        let mut input = basic_input();
+        // gross interest = 20,000 - 15,000 = 5,000; prior year = 6,000 => negative
+        input.prior_year_interest_reported_amt = Usd::from_dollars(6_000);
         let err = Output8815::try_new(input).unwrap_err();
         assert!(matches!(err, GideonTaxError::OutOfBounds(_)));
     }
@@ -578,13 +585,71 @@ mod tests {
     }
 
     #[test]
-    fn passthrough_fields_preserved() {
-        let input = basic_input();
+    fn paper_ee_bonds_half_face_value() {
+        // Paper EE face value $20,000 → principal = $10,000
+        // Proceeds $20,000 → interest = 20,000 - 10,000 = 10,000
+        let mut input = basic_input();
+        input.paper_ee_face_value_amt = Usd::from_dollars(20_000);
+        input.electronic_ee_face_value_amt = Usd::ZERO;
         let form = Output8815::try_new(input).unwrap();
-        assert_eq!(form.eligible_person_nm, "Jane Doe");
-        assert_eq!(form.eligible_institution_nm, "State University");
-        assert_eq!(form.city_nm, "Springfield");
-        assert_eq!(form.state_abbreviation_cd, "IL");
+        assert_eq!(
+            form.excl_bond_int_tot_py_bond_int_amt,
+            Usd::from_dollars(10_000)
+        );
+        assert!(form.is_valid());
+    }
+
+    #[test]
+    fn mixed_bond_types() {
+        // Paper EE face $10,000 → principal $5,000
+        // Electronic EE face $3,000 → principal $3,000
+        // Series I face $2,000 → principal $2,000
+        // Total principal = $10,000
+        // Proceeds $15,000 → interest = 15,000 - 10,000 = 5,000
+        let mut input = basic_input();
+        input.total_bond_proceeds_amt = Usd::from_dollars(15_000);
+        input.paper_ee_face_value_amt = Usd::from_dollars(10_000);
+        input.electronic_ee_face_value_amt = Usd::from_dollars(3_000);
+        input.series_i_face_value_amt = Usd::from_dollars(2_000);
+        let form = Output8815::try_new(input).unwrap();
+        assert_eq!(
+            form.excl_bond_int_tot_py_bond_int_amt,
+            Usd::from_dollars(5_000)
+        );
+        assert!(form.is_valid());
+    }
+
+    #[test]
+    fn prior_year_interest_reduces_line6() {
+        // Gross interest = 20,000 - 15,000 = 5,000
+        // Prior year = 2,000
+        // Line 6 = 5,000 - 2,000 = 3,000
+        let mut input = basic_input();
+        input.prior_year_interest_reported_amt = Usd::from_dollars(2_000);
+        let form = Output8815::try_new(input).unwrap();
+        assert_eq!(
+            form.excl_bond_int_tot_py_bond_int_amt,
+            Usd::from_dollars(3_000)
+        );
+        assert!(form.is_valid());
+    }
+
+    #[test]
+    fn line1_entries_preserved() {
+        let mut input = basic_input();
+        input.line1.push(F8815Line1 {
+            eligible_person_nm: "John Doe".to_string(),
+            eligible_institution_nm: "City College".to_string(),
+            eligible_institution_address: "456 Academic Blvd, Chicago, IL 60601".to_string(),
+        });
+        let form = Output8815::try_new(input).unwrap();
+        assert_eq!(form.line1.len(), 2);
+        assert_eq!(form.line1[0].eligible_person_nm, "Jane Doe");
+        assert_eq!(form.line1[1].eligible_person_nm, "John Doe");
+        assert_eq!(
+            form.line1[1].eligible_institution_address,
+            "456 Academic Blvd, Chicago, IL 60601"
+        );
         assert!(form.is_valid());
     }
 
