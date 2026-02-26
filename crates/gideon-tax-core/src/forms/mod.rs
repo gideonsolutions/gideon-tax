@@ -23,5 +23,5 @@ pub use output::{
     OutputSchedule1, OutputSchedule1A, OutputSchedule2, OutputSchedule3, OutputSchedule8812,
     OutputScheduleA, OutputScheduleB, OutputScheduleC, OutputScheduleD, OutputScheduleE,
     OutputScheduleEic, OutputScheduleF, OutputScheduleH, OutputScheduleJ, OutputScheduleNec,
-    OutputScheduleOi, OutputScheduleR, OutputScheduleSe,
+    OutputScheduleOi, OutputScheduleR, OutputScheduleSe, ScheduleRBox, ScheduleRInput,
 };
