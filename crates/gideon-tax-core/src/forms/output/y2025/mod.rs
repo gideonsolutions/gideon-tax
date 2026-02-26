@@ -116,7 +116,7 @@ pub use output_8697::Output8697;
 pub use output_8801::Output8801;
 pub use output_8805::Output8805;
 pub use output_8814::Output8814;
-pub use output_8815::Output8815;
+pub use output_8815::{F8815Input, Output8815};
 pub use output_8824::Output8824;
 pub use output_8829::Output8829;
 pub use output_8834::Output8834;
