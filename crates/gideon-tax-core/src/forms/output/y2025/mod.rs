@@ -137,7 +137,7 @@ pub use output_8959::Output8959;
 pub use output_8960::Output8960;
 pub use output_8962::Output8962;
 pub use output_8978::Output8978;
-pub use output_8995::Output8995;
+pub use output_8995::{F8995Input, Output8995};
 pub use output_8995_a::Output8995A;
 pub use output_schedule_1::OutputSchedule1;
 pub use output_schedule_1a::OutputSchedule1A;
