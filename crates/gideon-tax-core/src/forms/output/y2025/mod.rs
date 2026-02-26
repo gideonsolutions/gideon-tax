@@ -78,7 +78,7 @@ mod output_schedule_oi;
 mod output_schedule_r;
 mod output_schedule_se;
 
-pub use output_965_a::Output965A;
+pub use output_965_a::{F965AInput, Output965A};
 pub use output_1040::Output1040;
 pub use output_1040_nr::Output1040Nr;
 pub use output_1040_sr::Output1040Sr;
