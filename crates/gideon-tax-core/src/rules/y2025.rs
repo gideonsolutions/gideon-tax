@@ -52,6 +52,22 @@ impl TaxYearRules for Rules2025 {
     fn medicare_rate_bps(&self) -> u16 {
         145
     }
+
+    fn days_in_tax_year(&self) -> u32 {
+        365
+    }
+
+    fn f2555_max_foreign_earned_income_exclusion(&self) -> Usd {
+        Usd::from_dollars(130_000)
+    }
+
+    fn f2555_housing_per_day_cents(&self) -> i64 {
+        5_699
+    }
+
+    fn f2555_housing_full_year(&self) -> Usd {
+        Usd::from_dollars(20_800)
+    }
 }
 
 #[cfg(test)]

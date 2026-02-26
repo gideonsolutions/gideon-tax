@@ -43,6 +43,18 @@ pub trait TaxYearRules {
     /// Medicare tax rate as basis points (e.g. 145 = 1.45%).
     fn medicare_rate_bps(&self) -> u16;
 
+    /// Number of days in the tax year (365, or 366 for leap years).
+    fn days_in_tax_year(&self) -> u32;
+
+    /// Maximum foreign earned income exclusion (Form 2555, line 37).
+    fn f2555_max_foreign_earned_income_exclusion(&self) -> Usd;
+
+    /// Per-day base housing amount in cents (Form 2555, line 32).
+    fn f2555_housing_per_day_cents(&self) -> i64;
+
+    /// Full-year base housing amount (Form 2555, line 32 when line 31 = 365).
+    fn f2555_housing_full_year(&self) -> Usd;
+
     /// Base standard deduction before any age/blindness additions.
     fn typical_standard_deduction(&self, status: FilingStatus) -> Usd {
         use FilingStatus::*;
