@@ -107,7 +107,7 @@ pub use output_6251::Output6251;
 pub use output_6252::Output6252;
 pub use output_6781::Output6781;
 pub use output_8288_a::Output8288A;
-pub use output_8396::Output8396;
+pub use output_8396::{F8396Input, Output8396};
 pub use output_8582::Output8582;
 pub use output_8611::Output8611;
 pub use output_8621::Output8621;
