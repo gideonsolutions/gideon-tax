@@ -22,3 +22,5 @@ target
 
 # Before we have any binary we should not commit Cargo.lock
 Cargo.lock
+
+.claude/worktrees
