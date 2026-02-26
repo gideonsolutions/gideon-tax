@@ -11,7 +11,7 @@ pub use input::{
     Input1099Oid, Input1099Patr, Input1099R, Input1120SScheduleK1, InputForm, InputW2, InputW2G,
 };
 pub use output::{
-    F4137Input, F4137Line1, F8919Input, F8919Lines1To5, F8919ReasonCode, Output965A, Output1040,
+    F4137Input, F4137Line1, F8859Input, F8919Input, F8919Lines1To5, F8919ReasonCode, Output965A, Output1040,
     Output1040Nr, Output1040Sr, Output1042S, Output1116, Output2106, Output2439, Output2441,
     Output2555, Output3800, Output3903, Output4136, Output4137, Output4255, Output4562, Output4563,
     Output4684, Output4797, Output4835, Output4952, Output4972, Output5329, Output5695, Output6198,
