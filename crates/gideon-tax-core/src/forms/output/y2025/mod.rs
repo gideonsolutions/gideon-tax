@@ -94,7 +94,7 @@ pub use output_4136::Output4136;
 pub use output_4137::{F4137Input, F4137Line1, Output4137};
 pub use output_4255::Output4255;
 pub use output_4562::Output4562;
-pub use output_4563::Output4563;
+pub use output_4563::{F4563Input, F4563Line4b, F4563Line6, F4563Occupant, Output4563};
 pub use output_4684::Output4684;
 pub use output_4797::Output4797;
 pub use output_4835::Output4835;
