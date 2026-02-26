@@ -1,9 +1,9 @@
 use us_tax_brackets::TaxYear;
 
-use crate::Usd;
 use crate::forms::{DynForm, Form, FormType, OutputForm};
 use crate::rules::TaxYearRules;
 use crate::rules::y2025::Rules2025;
+use crate::{GideonTaxError, Usd};
 
 // =========================================================================
 // Line 1 row
@@ -154,7 +154,7 @@ impl OutputForm for Output4137 {
         input.w2_allocated_tips_amt > Usd::ZERO || input.has_unreported_tips_in_any_month
     }
 
-    fn new(input: Self::Input) -> Option<Self> {
+    fn try_new(input: Self::Input) -> Result<Self, GideonTaxError> {
         let rules = Rules2025;
 
         // Line 2: sum of column (c)
@@ -193,6 +193,14 @@ impl OutputForm for Output4137 {
 
         // Government 1.45%-only tips: remove from line 6 before SS comparison
         let gov_145_amt = input.government_employee_145_tips_amt;
+
+        if line6 < gov_145_amt {
+            return Err(GideonTaxError::OutOfBounds(format!(
+                "government_employee_145_tips_amt ({gov_145_amt}) exceeds \
+                 net unreported tips subject to Medicare tax ({line6})"
+            )));
+        }
+
         let gov_cd = if gov_145_amt > Usd::ZERO {
             "1.45% TIPS".to_string()
         } else {
@@ -200,7 +208,7 @@ impl OutputForm for Output4137 {
         };
 
         // Revised line 6 excluding SS-exempt tips, for SS tax purposes
-        let revised_line6 = (line6 - gov_145_amt).max(Usd::ZERO);
+        let revised_line6 = line6 - gov_145_amt;
 
         // Line 10: min(revised_line6, line 9)
         let line10 = revised_line6.min(line9);
@@ -217,7 +225,7 @@ impl OutputForm for Output4137 {
         // Line 13: line 11 + line 12
         let line13 = line11 + line12;
 
-        Some(Output4137 {
+        Ok(Output4137 {
             person_nm: input.person_nm,
             ssn: input.ssn,
             unreported_tip_income_per_employer: input.employers,
@@ -244,6 +252,7 @@ impl OutputForm for Output4137 {
     fn is_valid(&self) -> bool {
         let rules = Rules2025;
         let ss_wage_base = rules.social_security_wage_base();
+        let ss_bps = rules.social_security_rate_bps() as i64;
         let med_bps = rules.medicare_rate_bps() as i64;
 
         // Line 4 = Line 2 − Line 3
@@ -261,11 +270,14 @@ impl OutputForm for Output4137 {
 
         // Line 10 = min(revised_line6, Line 9)
         // revised_line6 = Line 6 − gov 1.45%-only tips
-        let revised_line6 = (self.net_unreported_minus_incdntl_amt
-            - self.government_employee_145_tip_amt)
-            .max(Usd::ZERO);
+        let revised_line6 =
+            self.net_unreported_minus_incdntl_amt - self.government_employee_145_tip_amt;
         let line10_ok = self.unreported_tips_subj_to_soc_sec_amt
             == revised_line6.min(self.net_wage_subject_to_soc_sec_tax_amt);
+
+        // Line 11 = Line 10 × SS rate
+        let line11_ok = self.social_security_tax_tip_amt
+            == Usd::from_cents(self.unreported_tips_subj_to_soc_sec_amt.cents() * ss_bps / 10_000);
 
         // Line 12 = Line 6 × Medicare rate
         let line12_ok = self.medicare_tax_tips_amt
@@ -275,7 +287,7 @@ impl OutputForm for Output4137 {
         let line13_ok = self.soc_sec_medicare_tax_unrptd_tip_amt
             == self.social_security_tax_tip_amt + self.medicare_tax_tips_amt;
 
-        line4_ok && line6_ok && line9_ok && line10_ok && line12_ok && line13_ok
+        line4_ok && line6_ok && line9_ok && line10_ok && line11_ok && line12_ok && line13_ok
     }
 }
 
@@ -337,7 +349,7 @@ mod tests {
 
     #[test]
     fn basic_unreported_tips() {
-        let form = Output4137::new(basic_input(10_000, 7_000)).unwrap();
+        let form = Output4137::try_new(basic_input(10_000, 7_000)).unwrap();
         // Line 4: 10,000 − 7,000 = 3,000
         assert_eq!(
             form.total_tips_received_minus_rpt_amt,
@@ -380,7 +392,7 @@ mod tests {
         let mut input = basic_input(10_000, 7_000);
         input.w2_social_security_wages_amt = Usd::from_dollars(170_000);
         input.w2_social_security_tips_amt = Usd::from_dollars(5_000);
-        let form = Output4137::new(input).unwrap();
+        let form = Output4137::try_new(input).unwrap();
         // Line 8: 170,000 + 5,000 + 0 = 175,000
         // Line 9: 176,100 − 175,000 = 1,100
         assert_eq!(
@@ -403,7 +415,7 @@ mod tests {
     fn incidental_tips_reduce_line6() {
         let mut input = basic_input(10_000, 7_000);
         input.incidental_cash_and_tips_amt = Usd::from_dollars(500);
-        let form = Output4137::new(input).unwrap();
+        let form = Output4137::try_new(input).unwrap();
         // Line 6: 3,000 − 500 = 2,500
         assert_eq!(
             form.net_unreported_minus_incdntl_amt,
@@ -417,7 +429,7 @@ mod tests {
         let mut input = basic_input(10_000, 7_000);
         // All 3,000 of unreported tips are SS-exempt
         input.government_employee_145_tips_amt = Usd::from_dollars(3_000);
-        let form = Output4137::new(input).unwrap();
+        let form = Output4137::try_new(input).unwrap();
         // revised_line6 = 3,000 − 3,000 = 0 → line 10 = 0 → no SS tax
         assert_eq!(form.unreported_tips_subj_to_soc_sec_amt, Usd::ZERO);
         assert_eq!(form.social_security_tax_tip_amt, Usd::ZERO);
@@ -436,7 +448,7 @@ mod tests {
         let mut input = basic_input(10_000, 7_000);
         // Only 1,000 of the 3,000 unreported tips are SS-exempt
         input.government_employee_145_tips_amt = Usd::from_dollars(1_000);
-        let form = Output4137::new(input).unwrap();
+        let form = Output4137::try_new(input).unwrap();
         // revised_line6 = 3,000 − 1,000 = 2,000
         // line 10 = min(2,000, 126,100) = 2,000
         assert_eq!(
@@ -469,7 +481,7 @@ mod tests {
             w2_allocated_tips_amt: Usd::ZERO,
             has_unreported_tips_in_any_month: true,
         };
-        let form = Output4137::new(input).unwrap();
+        let form = Output4137::try_new(input).unwrap();
         assert_eq!(form.total_tips_received_amt, Usd::from_dollars(9_000));
         assert_eq!(form.total_tips_reported_amt, Usd::from_dollars(5_000));
         assert_eq!(
@@ -484,7 +496,7 @@ mod tests {
         let mut input = basic_input(10_000, 7_000);
         input.w2_social_security_wages_amt = Usd::from_dollars(200_000);
         input.w2_social_security_tips_amt = Usd::ZERO;
-        let form = Output4137::new(input).unwrap();
+        let form = Output4137::try_new(input).unwrap();
         assert_eq!(form.net_wage_subject_to_soc_sec_tax_amt, Usd::ZERO);
         assert_eq!(form.unreported_tips_subj_to_soc_sec_amt, Usd::ZERO);
         assert_eq!(form.social_security_tax_tip_amt, Usd::ZERO);
@@ -499,7 +511,7 @@ mod tests {
         input.w2_social_security_tips_amt = Usd::ZERO;
         // RRTA of $200,000 should be capped at $176,100
         input.rrta_compensation_amt = Usd::from_dollars(200_000);
-        let form = Output4137::new(input).unwrap();
+        let form = Output4137::try_new(input).unwrap();
         // Line 8: 0 + 0 + min(200,000, 176,100) = 176,100
         assert_eq!(
             form.social_security_wages_and_tips_amt,
@@ -516,7 +528,7 @@ mod tests {
         input.w2_social_security_wages_amt = Usd::from_dollars(30_000);
         input.w2_social_security_tips_amt = Usd::ZERO;
         input.rrta_compensation_amt = Usd::from_dollars(10_000);
-        let form = Output4137::new(input).unwrap();
+        let form = Output4137::try_new(input).unwrap();
         // Line 8: 30,000 + 0 + min(10,000, 176,100) = 40,000
         assert_eq!(
             form.social_security_wages_and_tips_amt,
@@ -528,5 +540,14 @@ mod tests {
             Usd::from_dollars(136_100)
         );
         assert!(form.is_valid());
+    }
+
+    #[test]
+    fn gov_145_exceeds_line6_returns_error() {
+        let mut input = basic_input(10_000, 7_000);
+        // line6 = 3,000 but gov_145 = 4,000 → out of bounds
+        input.government_employee_145_tips_amt = Usd::from_dollars(4_000);
+        let err = Output4137::try_new(input).unwrap_err();
+        assert!(matches!(err, GideonTaxError::OutOfBounds(_)));
     }
 }

@@ -1,3 +1,5 @@
+use crate::GideonTaxError;
+
 use super::super::dyn_form::DynForm;
 use super::super::form::{Form, FormType};
 
@@ -12,13 +14,13 @@ pub trait OutputForm: Form + Sized {
 
     /// Returns `true` if the IRS requires this form for the given input
     /// (e.g., Form 4137 is required when the filer has unreported tip
-    /// income). This is a lightweight pre-check; [`new`](Self::new) may
-    /// still return `None` for edge cases.
+    /// income). This is a lightweight pre-check; [`try_new`](Self::try_new)
+    /// may still succeed even when this returns `false`.
     fn must_file(input: &Self::Input) -> bool;
 
-    /// Construct the form from its input. Returns `None` if the form is
-    /// unnecessary for this return (e.g., Schedule B when interest < $1,500).
-    fn new(input: Self::Input) -> Option<Self>;
+    /// Construct the form from its input. Returns `Err` if the input
+    /// violates a constraint.
+    fn try_new(input: Self::Input) -> Result<Self, GideonTaxError>;
 
     /// Always returns [`FormType::Output`].
     fn form_type() -> FormType {
