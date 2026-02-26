@@ -98,7 +98,7 @@ pub use output_4563::Output4563;
 pub use output_4684::Output4684;
 pub use output_4797::Output4797;
 pub use output_4835::Output4835;
-pub use output_4952::Output4952;
+pub use output_4952::{F4952Input, Output4952};
 pub use output_4972::Output4972;
 pub use output_5329::Output5329;
 pub use output_5695::Output5695;
