@@ -1,6 +1,6 @@
 use super::form::FormType;
 
-/// Enumerates every known tax form (input and output).
+/// Enumerates every known tax form (input, output, and election).
 ///
 /// Used in [`OutputForm::dependencies`](super::output::OutputForm::dependencies)
 /// so that each output form can declare which forms it depends on.
@@ -109,10 +109,14 @@ pub enum DynForm {
     F8995,
     F8995A,
     F965A,
+
+    // ── Election forms ──
+    F4029,
+    F4361,
 }
 
 impl DynForm {
-    /// Whether this form is an input or output form.
+    /// Whether this form is an input, output, or election form.
     pub const fn form_type(self) -> FormType {
         match self {
             Self::W2
@@ -134,6 +138,8 @@ impl DynForm {
             | Self::F1041ScheduleK1
             | Self::F1065ScheduleK1
             | Self::F1120SScheduleK1 => FormType::Input,
+
+            Self::F4029 | Self::F4361 => FormType::Election,
 
             _ => FormType::Output,
         }
