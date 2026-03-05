@@ -148,11 +148,9 @@ impl OutputForm for Output8815 {
     type Input = F8815Input;
 
     fn must_file(input: &Self::Input) -> bool {
-        let paper_ee_principal =
-            Usd::from_cents(input.paper_ee_face_value_amt.cents() / 2);
-        let total_principal = paper_ee_principal
-            + input.electronic_ee_face_value_amt
-            + input.series_i_face_value_amt;
+        let paper_ee_principal = Usd::from_cents(input.paper_ee_face_value_amt.cents() / 2);
+        let total_principal =
+            paper_ee_principal + input.electronic_ee_face_value_amt + input.series_i_face_value_amt;
         let interest = input.total_bond_proceeds_amt
             - total_principal
             - input.prior_year_interest_reported_amt;
@@ -180,12 +178,10 @@ impl OutputForm for Output8815 {
 
         // Line 6: computed via Line 6 Worksheet
         // WS line 3: paper EE principal = face value × 0.50
-        let paper_ee_principal =
-            Usd::from_cents(input.paper_ee_face_value_amt.cents() / 2);
+        let paper_ee_principal = Usd::from_cents(input.paper_ee_face_value_amt.cents() / 2);
         // WS line 5: total principal (paper EE principal + electronic EE face + series I face)
-        let total_principal = paper_ee_principal
-            + input.electronic_ee_face_value_amt
-            + input.series_i_face_value_amt;
+        let total_principal =
+            paper_ee_principal + input.electronic_ee_face_value_amt + input.series_i_face_value_amt;
         // WS line 6: proceeds − principal
         let gross_interest = line5 - total_principal;
         // WS line 8: subtract prior-year reported interest
@@ -479,15 +475,9 @@ mod tests {
         // line13 = 2,500 * 6,500 / 15,000 = 1,083.33 => from_cents(250000 * 650000 / 1500000) = from_cents(108333)
         // line14 = 2,500 - 1,083.33 = 1,416.67
         let form = Output8815::try_new(input).unwrap();
-        assert_eq!(
-            form.excl_bond_int_excess_agi_amt,
-            Usd::from_dollars(6_500)
-        );
+        assert_eq!(form.excl_bond_int_excess_agi_amt, Usd::from_dollars(6_500));
         assert_eq!(form.excl_bond_int_excess_agi_rt, "0.433");
-        assert_eq!(
-            form.excl_bond_int_offset_amt,
-            Usd::from_cents(108_333)
-        );
+        assert_eq!(form.excl_bond_int_offset_amt, Usd::from_cents(108_333));
         assert_eq!(
             form.excludable_savings_bond_int_amt,
             Usd::from_cents(250_000 - 108_333)
@@ -505,10 +495,7 @@ mod tests {
         // line13 = line8 (full offset)
         // line14 = 0
         let form = Output8815::try_new(input).unwrap();
-        assert_eq!(
-            form.excl_bond_int_excess_agi_amt,
-            Usd::from_dollars(20_500)
-        );
+        assert_eq!(form.excl_bond_int_excess_agi_amt, Usd::from_dollars(20_500));
         assert_eq!(form.excl_bond_int_excess_agi_rt, "1.000");
         assert_eq!(
             form.excl_bond_int_offset_amt,
@@ -531,15 +518,9 @@ mod tests {
         // line13 = 2,500 * 15,000 / 30,000 = 1,250
         // line14 = 2,500 - 1,250 = 1,250
         let form = Output8815::try_new(input).unwrap();
-        assert_eq!(
-            form.excl_bond_int_excess_agi_amt,
-            Usd::from_dollars(15_000)
-        );
+        assert_eq!(form.excl_bond_int_excess_agi_amt, Usd::from_dollars(15_000));
         assert_eq!(form.excl_bond_int_excess_agi_rt, "0.500");
-        assert_eq!(
-            form.excl_bond_int_offset_amt,
-            Usd::from_dollars(1_250)
-        );
+        assert_eq!(form.excl_bond_int_offset_amt, Usd::from_dollars(1_250));
         assert_eq!(
             form.excludable_savings_bond_int_amt,
             Usd::from_dollars(1_250)
