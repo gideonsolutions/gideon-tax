@@ -8,86 +8,97 @@ use crate::types::Filer;
 /// Year-specific tax parameters consumed by [`crate::spine::compute_spine`].
 ///
 /// Each tax year gets its own implementation that supplies the IRS-published
-/// dollar amounts. The [`standard_deduction`](TaxYearRules::standard_deduction)
-/// algorithm is a provided method that combines them.
+/// dollar amounts as associated constants. The
+/// [`standard_deduction`](TaxYearRules::standard_deduction) algorithm is a
+/// provided method that combines them.
 pub trait TaxYearRules {
-    fn year(&self) -> TaxYear;
+    const YEAR: TaxYear;
 
     /// Base standard deduction for Single or MFS filers.
-    fn single_mfs_typical_standard_deduction(&self) -> Usd;
+    const SINGLE_MFS_TYPICAL_STANDARD_DEDUCTION: Usd;
 
     /// Base standard deduction for MFJ or QSS filers.
-    fn mfj_qss_typical_standard_deduction(&self) -> Usd;
+    const MFJ_QSS_TYPICAL_STANDARD_DEDUCTION: Usd;
 
     /// Base standard deduction for Head of Household filers.
-    fn hoh_typical_standard_deduction(&self) -> Usd;
+    const HOH_TYPICAL_STANDARD_DEDUCTION: Usd;
 
     /// Per-box addition for Single or Head of Household filers.
-    fn additional_deduction_unmarried(&self) -> Usd;
+    const ADDITIONAL_DEDUCTION_UNMARRIED: Usd;
 
     /// Per-box addition for MFJ, MFS, or QSS filers.
-    fn additional_deduction_married(&self) -> Usd;
+    const ADDITIONAL_DEDUCTION_MARRIED: Usd;
 
     /// Amount added to a dependent's earned income before clamping.
-    fn dependent_earned_income_addition(&self) -> Usd;
+    const DEPENDENT_EARNED_INCOME_ADDITION: Usd;
 
     /// Minimum standard deduction for a dependent filer.
-    fn dependent_minimum_deduction(&self) -> Usd;
+    const DEPENDENT_MINIMUM_DEDUCTION: Usd;
 
     /// Maximum wages and tips subject to social security tax (wage base).
-    fn social_security_wage_base(&self) -> Usd;
+    const SOCIAL_SECURITY_WAGE_BASE: Usd;
 
     /// Social security tax rate as basis points (e.g. 620 = 6.20%).
-    fn social_security_rate_bps(&self) -> u16;
+    const SOCIAL_SECURITY_RATE_BPS: u16;
 
     /// Medicare tax rate as basis points (e.g. 145 = 1.45%).
-    fn medicare_rate_bps(&self) -> u16;
+    const MEDICARE_RATE_BPS: u16;
 
     /// Additional Medicare Tax rate as basis points (e.g. 90 = 0.9%).
-    fn additional_medicare_rate_bps(&self) -> u16;
+    const ADDITIONAL_MEDICARE_RATE_BPS: u16;
 
     /// Additional Medicare Tax threshold for MFJ filers.
-    fn additional_medicare_threshold_mfj(&self) -> Usd;
+    const ADDITIONAL_MEDICARE_THRESHOLD_MFJ: Usd;
 
     /// Additional Medicare Tax threshold for MFS filers.
-    fn additional_medicare_threshold_mfs(&self) -> Usd;
+    const ADDITIONAL_MEDICARE_THRESHOLD_MFS: Usd;
 
     /// Additional Medicare Tax threshold for Single, HoH, and QSS filers.
-    fn additional_medicare_threshold_single(&self) -> Usd;
+    const ADDITIONAL_MEDICARE_THRESHOLD_SINGLE: Usd;
+
+    /// Minimum net earnings from self-employment required to file Schedule SE.
+    const SE_MIN_NET_EARNINGS: Usd;
+
+    /// Minimum church employee wages (after 92.35% factor) to include on
+    /// Schedule SE line 5b. Below this, enter -0-.
+    const SE_MIN_CHURCH_WAGES: Usd;
+
+    /// Maximum income for optional methods (Schedule SE, Part II, line 14).
+    const SE_FARM_OPTIONAL_METHOD_MAX: Usd;
+
+    /// Number of days in the tax year (365, or 366 for leap years).
+    const DAYS_IN_TAX_YEAR: u32;
+
+    /// Maximum foreign earned income exclusion (Form 2555, line 37).
+    const F2555_MAX_FOREIGN_EARNED_INCOME_EXCLUSION: Usd;
+
+    /// Per-day base housing amount in cents (Form 2555, line 32).
+    const F2555_HOUSING_PER_DAY_CENTS: i64;
+
+    /// Full-year base housing amount (Form 2555, line 32 when line 31 = 365).
+    const F2555_HOUSING_FULL_YEAR: Usd;
 
     /// Additional Medicare Tax threshold for the given filing status.
-    fn additional_medicare_threshold(&self, status: FilingStatus) -> Usd {
+    fn additional_medicare_threshold(status: FilingStatus) -> Usd {
         use FilingStatus::*;
         match status {
-            MarriedFilingJointly => self.additional_medicare_threshold_mfj(),
-            MarriedFilingSeparately => self.additional_medicare_threshold_mfs(),
+            MarriedFilingJointly => Self::ADDITIONAL_MEDICARE_THRESHOLD_MFJ,
+            MarriedFilingSeparately => Self::ADDITIONAL_MEDICARE_THRESHOLD_MFS,
             Single | HeadOfHousehold | QualifyingSurvivingSpouse => {
-                self.additional_medicare_threshold_single()
+                Self::ADDITIONAL_MEDICARE_THRESHOLD_SINGLE
             }
         }
     }
 
-    /// Number of days in the tax year (365, or 366 for leap years).
-    fn days_in_tax_year(&self) -> u32;
-
-    /// Maximum foreign earned income exclusion (Form 2555, line 37).
-    fn f2555_max_foreign_earned_income_exclusion(&self) -> Usd;
-
-    /// Per-day base housing amount in cents (Form 2555, line 32).
-    fn f2555_housing_per_day_cents(&self) -> i64;
-
-    /// Full-year base housing amount (Form 2555, line 32 when line 31 = 365).
-    fn f2555_housing_full_year(&self) -> Usd;
-
     /// Base standard deduction before any age/blindness additions.
-    fn typical_standard_deduction(&self, status: FilingStatus) -> Usd {
+    fn typical_standard_deduction(status: FilingStatus) -> Usd {
         use FilingStatus::*;
         match status {
-            Single | MarriedFilingSeparately => self.single_mfs_typical_standard_deduction(),
+            Single | MarriedFilingSeparately => Self::SINGLE_MFS_TYPICAL_STANDARD_DEDUCTION,
             MarriedFilingJointly | QualifyingSurvivingSpouse => {
-                self.mfj_qss_typical_standard_deduction()
+                Self::MFJ_QSS_TYPICAL_STANDARD_DEDUCTION
             }
-            HeadOfHousehold => self.hoh_typical_standard_deduction(),
+            HeadOfHousehold => Self::HOH_TYPICAL_STANDARD_DEDUCTION,
         }
     }
 
@@ -96,7 +107,7 @@ pub trait TaxYearRules {
     /// Returns $0 for dual-status aliens or MFS when spouse itemizes.
     /// Otherwise applies the dependent formula or the typical base, plus
     /// an additional amount per qualifying age/blindness box.
-    fn standard_deduction(&self, params: &DeductionParams) -> Usd {
+    fn standard_deduction(params: &DeductionParams) -> Usd {
         use FilingStatus::*;
 
         // ── Zero-deduction overrides ────────────────────────────────
@@ -108,12 +119,12 @@ pub trait TaxYearRules {
         }
 
         // ── Base amount ─────────────────────────────────────────────
-        let base = self.typical_standard_deduction(params.filing_status);
+        let base = Self::typical_standard_deduction(params.filing_status);
 
         // ── Additional amount per qualifying box ────────────────────
         let per_box = match params.filing_status {
-            Single | HeadOfHousehold => self.additional_deduction_unmarried(),
-            _ => self.additional_deduction_married(),
+            Single | HeadOfHousehold => Self::ADDITIONAL_DEDUCTION_UNMARRIED,
+            _ => Self::ADDITIONAL_DEDUCTION_MARRIED,
         };
 
         let boxes = match params.filing_status {
@@ -127,8 +138,8 @@ pub trait TaxYearRules {
 
         // ── Dependent vs. non-dependent base ────────────────────────
         if params.is_dependent {
-            let earned_plus = params.earned_income + self.dependent_earned_income_addition();
-            let floor = self.dependent_minimum_deduction();
+            let earned_plus = params.earned_income + Self::DEPENDENT_EARNED_INCOME_ADDITION;
+            let floor = Self::DEPENDENT_MINIMUM_DEDUCTION;
             let capped_base = earned_plus.max(floor).min(base);
             capped_base + additional
         } else {

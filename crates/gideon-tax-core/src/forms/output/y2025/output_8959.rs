@@ -134,8 +134,7 @@ impl OutputForm for Output8959 {
     type Input = F8959Input;
 
     fn must_file(input: &Self::Input) -> bool {
-        let rules = Rules2025;
-        let threshold = rules.additional_medicare_threshold(input.filing_status);
+        let threshold = Rules2025::additional_medicare_threshold(input.filing_status);
 
         let line4 = input.w2_medicare_wages_and_tips_amt
             + input.unreported_medicare_tips_amt
@@ -146,10 +145,9 @@ impl OutputForm for Output8959 {
     }
 
     fn try_new(input: Self::Input) -> Result<Self, GideonTaxError> {
-        let rules = Rules2025;
-        let threshold = rules.additional_medicare_threshold(input.filing_status);
-        let add_med_bps = rules.additional_medicare_rate_bps() as i64;
-        let med_bps = rules.medicare_rate_bps() as i64;
+        let threshold = Rules2025::additional_medicare_threshold(input.filing_status);
+        let add_med_bps = Rules2025::ADDITIONAL_MEDICARE_RATE_BPS as i64;
+        let med_bps = Rules2025::MEDICARE_RATE_BPS as i64;
 
         // ── Part I ──────────────────────────────────────────────────
         let line1 = input.w2_medicare_wages_and_tips_amt;
@@ -225,9 +223,8 @@ impl OutputForm for Output8959 {
     }
 
     fn is_valid(&self) -> bool {
-        let rules = Rules2025;
-        let add_med_bps = rules.additional_medicare_rate_bps() as i64;
-        let med_bps = rules.medicare_rate_bps() as i64;
+        let add_med_bps = Rules2025::ADDITIONAL_MEDICARE_RATE_BPS as i64;
+        let med_bps = Rules2025::MEDICARE_RATE_BPS as i64;
         let threshold = self.filing_status_threshold_amt;
 
         // All three threshold fields must agree

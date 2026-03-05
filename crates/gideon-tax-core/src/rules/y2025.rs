@@ -9,81 +9,36 @@ use crate::rules::TaxYearRules;
 pub struct Rules2025;
 
 impl TaxYearRules for Rules2025 {
-    fn year(&self) -> TaxYear {
-        TaxYear::Y2025
-    }
+    const YEAR: TaxYear = TaxYear::Y2025;
 
-    fn single_mfs_typical_standard_deduction(&self) -> Usd {
-        Usd::from_dollars(15_750)
-    }
+    const SINGLE_MFS_TYPICAL_STANDARD_DEDUCTION: Usd = Usd::from_dollars(15_750);
+    const MFJ_QSS_TYPICAL_STANDARD_DEDUCTION: Usd = Usd::from_dollars(31_500);
+    const HOH_TYPICAL_STANDARD_DEDUCTION: Usd = Usd::from_dollars(23_625);
 
-    fn mfj_qss_typical_standard_deduction(&self) -> Usd {
-        Usd::from_dollars(31_500)
-    }
+    const ADDITIONAL_DEDUCTION_UNMARRIED: Usd = Usd::from_dollars(2_000);
+    const ADDITIONAL_DEDUCTION_MARRIED: Usd = Usd::from_dollars(1_600);
 
-    fn hoh_typical_standard_deduction(&self) -> Usd {
-        Usd::from_dollars(23_625)
-    }
+    const DEPENDENT_EARNED_INCOME_ADDITION: Usd = Usd::from_dollars(450);
+    const DEPENDENT_MINIMUM_DEDUCTION: Usd = Usd::from_dollars(1_350);
 
-    fn additional_deduction_unmarried(&self) -> Usd {
-        Usd::from_dollars(2_000)
-    }
+    const SOCIAL_SECURITY_WAGE_BASE: Usd = Usd::from_dollars(176_100);
+    const SOCIAL_SECURITY_RATE_BPS: u16 = 620;
+    const MEDICARE_RATE_BPS: u16 = 145;
+    const ADDITIONAL_MEDICARE_RATE_BPS: u16 = 90;
 
-    fn additional_deduction_married(&self) -> Usd {
-        Usd::from_dollars(1_600)
-    }
+    const ADDITIONAL_MEDICARE_THRESHOLD_MFJ: Usd = Usd::from_dollars(250_000);
+    const ADDITIONAL_MEDICARE_THRESHOLD_MFS: Usd = Usd::from_dollars(125_000);
+    const ADDITIONAL_MEDICARE_THRESHOLD_SINGLE: Usd = Usd::from_dollars(200_000);
 
-    fn dependent_earned_income_addition(&self) -> Usd {
-        Usd::from_dollars(450)
-    }
+    const SE_MIN_NET_EARNINGS: Usd = Usd::from_dollars(400);
+    const SE_MIN_CHURCH_WAGES: Usd = Usd::from_dollars(100);
+    const SE_FARM_OPTIONAL_METHOD_MAX: Usd = Usd::from_dollars(7_240);
 
-    fn dependent_minimum_deduction(&self) -> Usd {
-        Usd::from_dollars(1_350)
-    }
+    const DAYS_IN_TAX_YEAR: u32 = 365;
 
-    fn social_security_wage_base(&self) -> Usd {
-        Usd::from_dollars(176_100)
-    }
-
-    fn social_security_rate_bps(&self) -> u16 {
-        620
-    }
-
-    fn medicare_rate_bps(&self) -> u16 {
-        145
-    }
-
-    fn additional_medicare_rate_bps(&self) -> u16 {
-        90
-    }
-
-    fn additional_medicare_threshold_mfj(&self) -> Usd {
-        Usd::from_dollars(250_000)
-    }
-
-    fn additional_medicare_threshold_mfs(&self) -> Usd {
-        Usd::from_dollars(125_000)
-    }
-
-    fn additional_medicare_threshold_single(&self) -> Usd {
-        Usd::from_dollars(200_000)
-    }
-
-    fn days_in_tax_year(&self) -> u32 {
-        365
-    }
-
-    fn f2555_max_foreign_earned_income_exclusion(&self) -> Usd {
-        Usd::from_dollars(130_000)
-    }
-
-    fn f2555_housing_per_day_cents(&self) -> i64 {
-        5_699
-    }
-
-    fn f2555_housing_full_year(&self) -> Usd {
-        Usd::from_dollars(20_800)
-    }
+    const F2555_MAX_FOREIGN_EARNED_INCOME_EXCLUSION: Usd = Usd::from_dollars(130_000);
+    const F2555_HOUSING_PER_DAY_CENTS: i64 = 5_699;
+    const F2555_HOUSING_FULL_YEAR: Usd = Usd::from_dollars(20_800);
 }
 
 #[cfg(test)]
@@ -123,31 +78,31 @@ mod tests {
 
     #[test]
     fn base_single() {
-        let d = Rules2025.standard_deduction(&params(FilingStatus::Single));
+        let d = Rules2025::standard_deduction(&params(FilingStatus::Single));
         assert_eq!(d, Usd::from_dollars(15_750));
     }
 
     #[test]
     fn base_mfj() {
-        let d = Rules2025.standard_deduction(&params(FilingStatus::MarriedFilingJointly));
+        let d = Rules2025::standard_deduction(&params(FilingStatus::MarriedFilingJointly));
         assert_eq!(d, Usd::from_dollars(31_500));
     }
 
     #[test]
     fn base_hoh() {
-        let d = Rules2025.standard_deduction(&params(FilingStatus::HeadOfHousehold));
+        let d = Rules2025::standard_deduction(&params(FilingStatus::HeadOfHousehold));
         assert_eq!(d, Usd::from_dollars(23_625));
     }
 
     #[test]
     fn base_mfs() {
-        let d = Rules2025.standard_deduction(&params(FilingStatus::MarriedFilingSeparately));
+        let d = Rules2025::standard_deduction(&params(FilingStatus::MarriedFilingSeparately));
         assert_eq!(d, Usd::from_dollars(15_750));
     }
 
     #[test]
     fn base_qss() {
-        let d = Rules2025.standard_deduction(&params(FilingStatus::QualifyingSurvivingSpouse));
+        let d = Rules2025::standard_deduction(&params(FilingStatus::QualifyingSurvivingSpouse));
         assert_eq!(d, Usd::from_dollars(31_500));
     }
 
@@ -158,7 +113,7 @@ mod tests {
         let mut p = params(FilingStatus::Single);
         p.taxpayer = SENIOR;
         // 15,750 + 1 * 2,000 = 17,750
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(17_750));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(17_750));
     }
 
     #[test]
@@ -166,7 +121,7 @@ mod tests {
         let mut p = params(FilingStatus::Single);
         p.taxpayer = SENIOR_BLIND;
         // 15,750 + 2 * 2,000 = 19,750
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(19_750));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(19_750));
     }
 
     #[test]
@@ -175,7 +130,7 @@ mod tests {
         p.taxpayer = SENIOR;
         p.spouse = Some(SENIOR);
         // 31,500 + 2 * 1,600 = 34,700
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(34_700));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(34_700));
     }
 
     #[test]
@@ -184,7 +139,7 @@ mod tests {
         p.taxpayer = SENIOR_BLIND;
         p.spouse = Some(SENIOR_BLIND);
         // 31,500 + 4 * 1,600 = 37,900
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(37_900));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(37_900));
     }
 
     #[test]
@@ -192,7 +147,7 @@ mod tests {
         let mut p = params(FilingStatus::HeadOfHousehold);
         p.taxpayer = BLIND;
         // 23,625 + 1 * 2,000 = 25,625
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(25_625));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(25_625));
     }
 
     // ── Dependent: earned income formula ────────────────────────────
@@ -203,7 +158,7 @@ mod tests {
         p.is_dependent = true;
         p.earned_income = Usd::ZERO;
         // max(0 + 450, 1,350) = 1,350; min(1,350, 15,750) = 1,350
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(1_350));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(1_350));
     }
 
     #[test]
@@ -212,7 +167,7 @@ mod tests {
         p.is_dependent = true;
         p.earned_income = Usd::from_dollars(500);
         // max(500 + 450, 1,350) = 1,350; min(1,350, 15,750) = 1,350
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(1_350));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(1_350));
     }
 
     #[test]
@@ -221,7 +176,7 @@ mod tests {
         p.is_dependent = true;
         p.earned_income = Usd::from_dollars(5_000);
         // max(5,000 + 450, 1,350) = 5,450; min(5,450, 15,750) = 5,450
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(5_450));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(5_450));
     }
 
     #[test]
@@ -230,7 +185,7 @@ mod tests {
         p.is_dependent = true;
         p.earned_income = Usd::from_dollars(20_000);
         // max(20,000 + 450, 1,350) = 20,450; min(20,450, 15,750) = 15,750
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(15_750));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(15_750));
     }
 
     #[test]
@@ -242,7 +197,7 @@ mod tests {
         // base portion: max(3,000 + 450, 1,350) = 3,450; min(3,450, 15,750) = 3,450
         // additional: 2 * 2,000 = 4,000
         // total: 3,450 + 4,000 = 7,450
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::from_dollars(7_450));
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::from_dollars(7_450));
     }
 
     // ── Zero-deduction overrides ────────────────────────────────────
@@ -252,13 +207,13 @@ mod tests {
         let mut p = params(FilingStatus::Single);
         p.is_dual_status_alien = true;
         p.taxpayer = SENIOR; // boxes don't matter
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::ZERO);
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::ZERO);
     }
 
     #[test]
     fn mfs_spouse_itemizes_is_zero() {
         let mut p = params(FilingStatus::MarriedFilingSeparately);
         p.spouse_itemizes = true;
-        assert_eq!(Rules2025.standard_deduction(&p), Usd::ZERO);
+        assert_eq!(Rules2025::standard_deduction(&p), Usd::ZERO);
     }
 }
