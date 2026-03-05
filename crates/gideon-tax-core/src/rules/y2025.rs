@@ -53,6 +53,22 @@ impl TaxYearRules for Rules2025 {
         145
     }
 
+    fn additional_medicare_rate_bps(&self) -> u16 {
+        90
+    }
+
+    fn additional_medicare_threshold_mfj(&self) -> Usd {
+        Usd::from_dollars(250_000)
+    }
+
+    fn additional_medicare_threshold_mfs(&self) -> Usd {
+        Usd::from_dollars(125_000)
+    }
+
+    fn additional_medicare_threshold_single(&self) -> Usd {
+        Usd::from_dollars(200_000)
+    }
+
     fn days_in_tax_year(&self) -> u32 {
         365
     }

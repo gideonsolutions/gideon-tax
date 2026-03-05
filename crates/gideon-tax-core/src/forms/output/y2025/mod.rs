@@ -135,7 +135,7 @@ pub use output_8919::{F8919Input, F8919Lines1To5, F8919ReasonCode, Output8919};
 pub use output_8936::Output8936;
 pub use output_8936_schedule_a::Output8936ScheduleA;
 pub use output_8949::Output8949;
-pub use output_8959::Output8959;
+pub use output_8959::{F8959Input, Output8959};
 pub use output_8960::Output8960;
 pub use output_8962::Output8962;
 pub use output_8978::Output8978;
