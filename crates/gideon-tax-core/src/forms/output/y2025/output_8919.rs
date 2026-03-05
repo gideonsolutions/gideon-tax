@@ -160,8 +160,6 @@ impl OutputForm for Output8919 {
     }
 
     fn try_new(input: Self::Input) -> Result<Self, GideonTaxError> {
-        let rules = Rules2025;
-
         // Line 6: sum of column (f) across all firms
         let line6 = input
             .firms
@@ -170,7 +168,7 @@ impl OutputForm for Output8919 {
             .sum::<Usd>();
 
         // Line 7: social security wage base (from rules)
-        let ss_wage_base = rules.social_security_wage_base();
+        let ss_wage_base = Rules2025::SOCIAL_SECURITY_WAGE_BASE;
 
         // Line 8: W-2 box 3 + W-2 box 7 + RRTA (capped at wage base)
         //         + Form 4137 line 10
@@ -186,8 +184,8 @@ impl OutputForm for Output8919 {
         // Line 10: min(line 6, line 9)
         let line10 = line6.min(line9);
 
-        let ss_bps = rules.social_security_rate_bps() as i64;
-        let med_bps = rules.medicare_rate_bps() as i64;
+        let ss_bps = Rules2025::SOCIAL_SECURITY_RATE_BPS as i64;
+        let med_bps = Rules2025::MEDICARE_RATE_BPS as i64;
 
         // Line 11: line 10 × SS rate
         let line11 = Usd::from_cents(line10.cents() * ss_bps / 10_000);
@@ -217,10 +215,9 @@ impl OutputForm for Output8919 {
     }
 
     fn is_valid(&self) -> bool {
-        let rules = Rules2025;
-        let ss_wage_base = rules.social_security_wage_base();
-        let ss_bps = rules.social_security_rate_bps() as i64;
-        let med_bps = rules.medicare_rate_bps() as i64;
+        let ss_wage_base = Rules2025::SOCIAL_SECURITY_WAGE_BASE;
+        let ss_bps = Rules2025::SOCIAL_SECURITY_RATE_BPS as i64;
+        let med_bps = Rules2025::MEDICARE_RATE_BPS as i64;
 
         // Line 6 = sum of per-firm wages
         let line6_ok = self.total_wages_with_no_withholding_amt

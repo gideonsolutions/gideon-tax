@@ -503,8 +503,7 @@ impl OutputForm for Output2555 {
     }
 
     fn try_new(input: Self::Input) -> Result<Self, GideonTaxError> {
-        let rules = Rules2025;
-        let days_in_year = rules.days_in_tax_year();
+        let days_in_year = Rules2025::DAYS_IN_TAX_YEAR;
 
         // -- Validation --
         if input.housing_qualified_days_cnt > days_in_year {
@@ -560,9 +559,9 @@ impl OutputForm for Output2555 {
                 .min(input.housing_expense_limit_amt);
 
             let l32 = if days31 == days_in_year {
-                rules.f2555_housing_full_year()
+                Rules2025::F2555_HOUSING_FULL_YEAR
             } else {
-                Usd::from_cents(rules.f2555_housing_per_day_cents() * days31 as i64)
+                Usd::from_cents(Rules2025::F2555_HOUSING_PER_DAY_CENTS * days31 as i64)
             };
 
             let l33 = (l30 - l32).max(Usd::ZERO);
@@ -597,7 +596,7 @@ impl OutputForm for Output2555 {
         // ================================================================
         // Part VII — Lines 37–42
         // ================================================================
-        let line37 = rules.f2555_max_foreign_earned_income_exclusion();
+        let line37 = Rules2025::F2555_MAX_FOREIGN_EARNED_INCOME_EXCLUSION;
         let days38 = input.foreign_earn_incm_excl_qlfy_days_cnt;
 
         let line39_str = if days38 == days_in_year {
@@ -1027,7 +1026,7 @@ mod tests {
         );
         assert_eq!(
             form.housing_maximum_allowed_amt,
-            Rules2025.f2555_housing_full_year()
+            Rules2025::F2555_HOUSING_FULL_YEAR
         );
         assert_eq!(form.housing_expenses_over_max_amt, Usd::from_dollars(9_200));
         assert_eq!(form.employer_prov_housing_excl_pct, "0.333");
@@ -1051,7 +1050,7 @@ mod tests {
         let form = Output2555::try_new(input).unwrap();
         assert_eq!(
             form.housing_maximum_allowed_amt,
-            Usd::from_cents(Rules2025.f2555_housing_per_day_cents() * 200)
+            Usd::from_cents(Rules2025::F2555_HOUSING_PER_DAY_CENTS * 200)
         );
         assert!(form.is_valid());
     }

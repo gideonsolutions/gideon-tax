@@ -115,11 +115,11 @@ impl std::error::Error for SpineError {
 /// Returns [`SpineError::YearMismatch`] if `input.tax_year` differs from
 /// `rules.year()`, or [`SpineError::TaxComputeError`] if the underlying
 /// bracket lookup fails.
-pub fn compute_spine(rules: &dyn TaxYearRules, input: &ReturnInput) -> Result<Ledger, SpineError> {
-    if input.tax_year != rules.year() {
+pub fn compute_spine<R: TaxYearRules>(input: &ReturnInput) -> Result<Ledger, SpineError> {
+    if input.tax_year != R::YEAR {
         return Err(SpineError::YearMismatch {
             input: input.tax_year,
-            rules: rules.year(),
+            rules: R::YEAR,
         });
     }
 
@@ -130,7 +130,7 @@ pub fn compute_spine(rules: &dyn TaxYearRules, input: &ReturnInput) -> Result<Le
     let agi = total_income - adjustments;
 
     // TODO: choose between standard and itemized deductions (Schedule A)
-    let deductions = rules.standard_deduction(&input.deduction_params());
+    let deductions = R::standard_deduction(&input.deduction_params());
     let taxable_income = (agi - deductions).max(Usd::ZERO);
 
     // compute_tax expects whole dollars; convert via IRS rounding.
@@ -218,7 +218,7 @@ mod tests {
             w2_wages: Usd::from_dollars(50_000),
             fed_withholding: Usd::ZERO,
         };
-        let err = compute_spine(&Rules2025, &inp).unwrap_err();
+        let err = compute_spine::<Rules2025>(&inp).unwrap_err();
         assert!(matches!(
             err,
             SpineError::YearMismatch {
@@ -230,7 +230,7 @@ mod tests {
 
     #[test]
     fn wages_below_deduction_full_refund() {
-        let ledger = compute_spine(&Rules2025, &input(10_000, 2_000)).unwrap();
+        let ledger = compute_spine::<Rules2025>(&input(10_000, 2_000)).unwrap();
         assert_eq!(ledger[&Key::TaxableIncome], Usd::ZERO);
         assert_eq!(ledger[&Key::RegularTax], Usd::ZERO);
         assert_eq!(ledger[&Key::TotalTax], Usd::ZERO);
@@ -240,7 +240,7 @@ mod tests {
 
     #[test]
     fn wages_above_deduction_no_withholding_owes() {
-        let ledger = compute_spine(&Rules2025, &input(50_000, 0)).unwrap();
+        let ledger = compute_spine::<Rules2025>(&input(50_000, 0)).unwrap();
         assert!(ledger[&Key::TaxableIncome] > Usd::ZERO);
         assert!(ledger[&Key::RegularTax] > Usd::ZERO);
         assert_eq!(ledger[&Key::Refund], Usd::ZERO);
@@ -250,7 +250,7 @@ mod tests {
 
     #[test]
     fn withholding_exceeds_tax_refund() {
-        let ledger = compute_spine(&Rules2025, &input(50_000, 10_000)).unwrap();
+        let ledger = compute_spine::<Rules2025>(&input(50_000, 10_000)).unwrap();
         let tax = ledger[&Key::TotalTax];
         assert!(tax > Usd::ZERO);
         assert!(Usd::from_dollars(10_000) > tax);
@@ -261,7 +261,7 @@ mod tests {
 
     #[test]
     fn ledger_has_all_keys() {
-        let ledger = compute_spine(&Rules2025, &input(50_000, 5_000)).unwrap();
+        let ledger = compute_spine::<Rules2025>(&input(50_000, 5_000)).unwrap();
         let expected = [
             Key::TotalIncome,
             Key::Adjustments,
@@ -288,7 +288,7 @@ mod tests {
 
     #[test]
     fn zero_wages_zero_withholding() {
-        let ledger = compute_spine(&Rules2025, &input(0, 0)).unwrap();
+        let ledger = compute_spine::<Rules2025>(&input(0, 0)).unwrap();
         assert_eq!(ledger[&Key::TotalIncome], Usd::ZERO);
         assert_eq!(ledger[&Key::TaxableIncome], Usd::ZERO);
         assert_eq!(ledger[&Key::TotalTax], Usd::ZERO);
