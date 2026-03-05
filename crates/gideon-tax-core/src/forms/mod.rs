@@ -1,9 +1,11 @@
 mod dyn_form;
+pub mod election;
 mod form;
 pub mod input;
 pub mod output;
 
 pub use dyn_form::DynForm;
+pub use election::{Election4029, Election4361, ElectionForm, MinisterialCategory};
 pub use form::{Form, FormType};
 pub use input::{
     Input1041ScheduleK1, Input1065ScheduleK1, Input1098, Input1098C, Input1098E, Input1098T,
