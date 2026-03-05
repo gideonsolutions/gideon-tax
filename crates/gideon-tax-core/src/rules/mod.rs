@@ -43,6 +43,30 @@ pub trait TaxYearRules {
     /// Medicare tax rate as basis points (e.g. 145 = 1.45%).
     fn medicare_rate_bps(&self) -> u16;
 
+    /// Additional Medicare Tax rate as basis points (e.g. 90 = 0.9%).
+    fn additional_medicare_rate_bps(&self) -> u16;
+
+    /// Additional Medicare Tax threshold for MFJ filers.
+    fn additional_medicare_threshold_mfj(&self) -> Usd;
+
+    /// Additional Medicare Tax threshold for MFS filers.
+    fn additional_medicare_threshold_mfs(&self) -> Usd;
+
+    /// Additional Medicare Tax threshold for Single, HoH, and QSS filers.
+    fn additional_medicare_threshold_single(&self) -> Usd;
+
+    /// Additional Medicare Tax threshold for the given filing status.
+    fn additional_medicare_threshold(&self, status: FilingStatus) -> Usd {
+        use FilingStatus::*;
+        match status {
+            MarriedFilingJointly => self.additional_medicare_threshold_mfj(),
+            MarriedFilingSeparately => self.additional_medicare_threshold_mfs(),
+            Single | HeadOfHousehold | QualifyingSurvivingSpouse => {
+                self.additional_medicare_threshold_single()
+            }
+        }
+    }
+
     /// Number of days in the tax year (365, or 366 for leap years).
     fn days_in_tax_year(&self) -> u32;
 
