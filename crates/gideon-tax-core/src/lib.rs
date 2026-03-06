@@ -24,7 +24,7 @@ pub use forms::{
     Output8995A, OutputForm, OutputSchedule1, OutputSchedule1A, OutputSchedule2, OutputSchedule3,
     OutputSchedule8812, OutputScheduleA, OutputScheduleB, OutputScheduleC, OutputScheduleD,
     OutputScheduleE, OutputScheduleEic, OutputScheduleF, OutputScheduleH, OutputScheduleJ,
-    OutputScheduleNec, OutputScheduleOi, OutputScheduleR, OutputScheduleSe,
+    OutputScheduleNec, OutputScheduleOi, OutputScheduleR, OutputScheduleSe, ScheduleSeInput,
 };
 pub use input::{
     Core1099B, Core1099Div, Core1099G, Core1099Int, Core1099K, Core1099Misc, Core1099Nec,

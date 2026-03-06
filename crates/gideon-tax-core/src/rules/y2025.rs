@@ -32,6 +32,8 @@ impl TaxYearRules for Rules2025 {
 
     const SE_MIN_NET_EARNINGS: Usd = Usd::from_dollars(400);
     const SE_MIN_CHURCH_WAGES: Usd = Usd::from_dollars(100);
+    const SE_MIN_CHURCH_EMPLOYEE_INCOME: Usd = Usd::from_cents(10_828);
+    const SE_CRP_GROSS_THRESHOLD: Usd = Usd::from_dollars(434);
     const SE_FARM_OPTIONAL_METHOD_MAX: Usd = Usd::from_dollars(7_240);
 
     const DAYS_IN_TAX_YEAR: u32 = 365;
