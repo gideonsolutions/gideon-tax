@@ -158,4 +158,4 @@ pub use output_schedule_j::OutputScheduleJ;
 pub use output_schedule_nec::OutputScheduleNec;
 pub use output_schedule_oi::OutputScheduleOi;
 pub use output_schedule_r::OutputScheduleR;
-pub use output_schedule_se::OutputScheduleSe;
+pub use output_schedule_se::{OutputScheduleSe, ScheduleSeInput};

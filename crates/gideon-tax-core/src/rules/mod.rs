@@ -63,6 +63,14 @@ pub trait TaxYearRules {
     /// Schedule SE line 5b. Below this, enter -0-.
     const SE_MIN_CHURCH_WAGES: Usd;
 
+    /// Minimum church employee income (before 92.35% factor) that triggers
+    /// the Schedule SE filing requirement ($108.28 for 2025).
+    const SE_MIN_CHURCH_EMPLOYEE_INCOME: Usd;
+
+    /// Minimum combined lines 1a + 2 when CRP payments (line 1b) cause both
+    /// lines 4a and 4c to fall below SE_MIN_NET_EARNINGS ($434 for 2025).
+    const SE_CRP_GROSS_THRESHOLD: Usd;
+
     /// Maximum income for optional methods (Schedule SE, Part II, line 14).
     const SE_FARM_OPTIONAL_METHOD_MAX: Usd;
 
