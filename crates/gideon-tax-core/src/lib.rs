@@ -9,7 +9,8 @@ pub use error::GideonTaxError;
 pub use forms::{
     DynForm, Election4029, Election4361, ElectionForm, F2555Input, F2555Line14, F2555Line18,
     F4137Input, F4137Line1, F4563Input, F4563Line4b, F4563Line6, F4563Occupant, F4868Input,
-    F8919Input, F8919Lines1To5, F8919ReasonCode, F8959Input, Form, FormType, Input1041ScheduleK1,
+    F8611Input, F8919Input, F8919Lines1To5, F8919ReasonCode, F8959Input, Form, FormType,
+    Input1041ScheduleK1,
     Input1065ScheduleK1, Input1098, Input1098C, Input1098E, Input1098T, Input1099B, Input1099Div,
     Input1099G, Input1099Int, Input1099K, Input1099Misc, Input1099Nec, Input1099Oid, Input1099Patr,
     Input1099R, Input1120SScheduleK1, InputForm, InputW2, InputW2G, MinisterialCategory,

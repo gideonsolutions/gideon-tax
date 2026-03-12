@@ -14,7 +14,8 @@ pub use input::{
 };
 pub use output::{
     F2555Input, F2555Line14, F2555Line18, F4137Input, F4137Line1, F4563Input, F4563Line4b,
-    F4563Line6, F4563Occupant, F4868Input, F8919Input, F8919Lines1To5, F8919ReasonCode, F8959Input,
+    F4563Line6, F4563Occupant, F4868Input, F8611Input, F8919Input, F8919Lines1To5,
+    F8919ReasonCode, F8959Input,
     Output965A, Output1040, Output1040Nr, Output1040Sr, Output1042S, Output1116, Output2106,
     Output2439, Output2441, Output2555, Output3800, Output3903, Output4136, Output4137, Output4255,
     Output4562, Output4563, Output4684, Output4797, Output4835, Output4868, Output4952, Output4972,
