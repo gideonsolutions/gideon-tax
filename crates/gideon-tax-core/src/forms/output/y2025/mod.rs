@@ -129,7 +129,7 @@ pub use output_8863::Output8863;
 pub use output_8866::Output8866;
 pub use output_8880::Output8880;
 pub use output_8888::Output8888;
-pub use output_8889::Output8889;
+pub use output_8889::{F8889Input, Output8889};
 pub use output_8912::Output8912;
 pub use output_8919::{F8919Input, F8919Lines1To5, F8919ReasonCode, Output8919};
 pub use output_8936::Output8936;
