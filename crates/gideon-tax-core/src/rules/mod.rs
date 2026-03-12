@@ -93,6 +93,31 @@ pub trait TaxYearRules {
     /// a Credit Reduction State.
     const FUTA_CREDIT_REDUCTION_STATES: &'static [FutaCreditReductionState];
 
+    /// Net Investment Income Tax rate as basis points (e.g. 380 = 3.8%).
+    const NIIT_RATE_BPS: u16;
+
+    /// NIIT threshold for MFJ or QSS filers.
+    const NIIT_THRESHOLD_MFJ_QSS: Usd;
+
+    /// NIIT threshold for MFS filers.
+    const NIIT_THRESHOLD_MFS: Usd;
+
+    /// NIIT threshold for Single or HoH filers.
+    const NIIT_THRESHOLD_SINGLE_HOH: Usd;
+
+    /// Highest tax bracket threshold for estates and trusts (Form 8960, line 19b).
+    const ESTATE_TRUST_HIGHEST_BRACKET: Usd;
+
+    /// NIIT threshold for the given filing status (Form 8960, line 14).
+    fn niit_threshold(status: FilingStatus) -> Usd {
+        use FilingStatus::*;
+        match status {
+            MarriedFilingJointly | QualifyingSurvivingSpouse => Self::NIIT_THRESHOLD_MFJ_QSS,
+            MarriedFilingSeparately => Self::NIIT_THRESHOLD_MFS,
+            Single | HeadOfHousehold => Self::NIIT_THRESHOLD_SINGLE_HOH,
+        }
+    }
+
     /// Maximum foreign earned income exclusion (Form 2555, line 37).
     const F2555_MAX_FOREIGN_EARNED_INCOME_EXCLUSION: Usd;
 
