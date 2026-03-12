@@ -102,7 +102,7 @@ pub use output_4835::Output4835;
 pub use output_4868::{F4868Input, Output4868};
 pub use output_4952::Output4952;
 pub use output_4972::Output4972;
-pub use output_5329::Output5329;
+pub use output_5329::{F5329Input, Output5329};
 pub use output_5695::Output5695;
 pub use output_6198::Output6198;
 pub use output_6251::Output6251;
