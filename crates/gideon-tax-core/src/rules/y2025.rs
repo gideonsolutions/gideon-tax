@@ -57,6 +57,12 @@ impl TaxYearRules for Rules2025 {
         },
     ];
 
+    const NIIT_RATE_BPS: u16 = 380;
+    const NIIT_THRESHOLD_MFJ_QSS: Usd = Usd::from_dollars(250_000);
+    const NIIT_THRESHOLD_MFS: Usd = Usd::from_dollars(125_000);
+    const NIIT_THRESHOLD_SINGLE_HOH: Usd = Usd::from_dollars(200_000);
+    const ESTATE_TRUST_HIGHEST_BRACKET: Usd = Usd::from_dollars(15_650);
+
     const F2555_MAX_FOREIGN_EARNED_INCOME_EXCLUSION: Usd = Usd::from_dollars(130_000);
     const F2555_HOUSING_PER_DAY_CENTS: i64 = 5_699;
     const F2555_HOUSING_FULL_YEAR: Usd = Usd::from_dollars(20_800);
