@@ -1,7 +1,7 @@
 use us_tax_brackets::TaxYear;
 
 use crate::Usd;
-use crate::rules::TaxYearRules;
+use crate::rules::{FutaCreditReductionState, TaxYearRules};
 
 /// IRS-published parameters for tax year 2025 (filed in 2026).
 ///
@@ -37,6 +37,25 @@ impl TaxYearRules for Rules2025 {
     const SE_FARM_OPTIONAL_METHOD_MAX: Usd = Usd::from_dollars(7_240);
 
     const DAYS_IN_TAX_YEAR: u32 = 365;
+
+    const FUTA_RATE_BPS: u16 = 600;
+    const FUTA_CREDIT_RATE_BPS: u16 = 540;
+
+    /// Credit reduction states for 2025 per IRS Schedule H instructions,
+    /// Worksheet 2.
+    ///
+    /// - California (CA): 1.2% reduction rate
+    /// - U.S. Virgin Islands (VI): 4.5% reduction rate
+    const FUTA_CREDIT_REDUCTION_STATES: &'static [FutaCreditReductionState] = &[
+        FutaCreditReductionState {
+            state_cd: "CA",
+            reduction_rate_bps: 120,
+        },
+        FutaCreditReductionState {
+            state_cd: "VI",
+            reduction_rate_bps: 450,
+        },
+    ];
 
     const F2555_MAX_FOREIGN_EARNED_INCOME_EXCLUSION: Usd = Usd::from_dollars(130_000);
     const F2555_HOUSING_PER_DAY_CENTS: i64 = 5_699;

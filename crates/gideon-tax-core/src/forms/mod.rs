@@ -26,5 +26,6 @@ pub use output::{
     Output8995A, OutputForm, OutputSchedule1, OutputSchedule1A, OutputSchedule2, OutputSchedule3,
     OutputSchedule8812, OutputScheduleA, OutputScheduleB, OutputScheduleC, OutputScheduleD,
     OutputScheduleE, OutputScheduleEic, OutputScheduleF, OutputScheduleH, OutputScheduleJ,
-    OutputScheduleNec, OutputScheduleOi, OutputScheduleR, OutputScheduleSe, ScheduleSeInput,
+    OutputScheduleNec, OutputScheduleOi, OutputScheduleR, OutputScheduleSe, ScheduleHInput,
+    ScheduleSeInput, UnemploymentStateTaxEntry, UnemploymentStateTaxInput,
 };

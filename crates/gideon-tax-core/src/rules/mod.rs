@@ -77,6 +77,22 @@ pub trait TaxYearRules {
     /// Number of days in the tax year (365, or 366 for leap years).
     const DAYS_IN_TAX_YEAR: u32;
 
+    /// FUTA gross tax rate as basis points (e.g. 600 = 6.0%).
+    const FUTA_RATE_BPS: u16;
+
+    /// FUTA maximum credit rate as basis points (e.g. 540 = 5.4%).
+    const FUTA_CREDIT_RATE_BPS: u16;
+
+    /// FUTA credit reduction states for this tax year.
+    ///
+    /// States that have outstanding federal unemployment loans are subject to
+    /// a credit reduction. Employers in these states receive a smaller FUTA
+    /// credit, effectively increasing the FUTA tax owed.
+    ///
+    /// See IRS Schedule H instructions, Worksheet 2 — Household Employers in
+    /// a Credit Reduction State.
+    const FUTA_CREDIT_REDUCTION_STATES: &'static [FutaCreditReductionState];
+
     /// Maximum foreign earned income exclusion (Form 2555, line 37).
     const F2555_MAX_FOREIGN_EARNED_INCOME_EXCLUSION: Usd;
 
@@ -171,4 +187,20 @@ pub struct DeductionParams {
     pub is_dual_status_alien: bool,
     pub spouse_itemizes: bool,
     pub earned_income: Usd,
+}
+
+/// A state or territory subject to FUTA credit reduction for a given tax year.
+///
+/// States with outstanding federal unemployment trust fund loans receive a
+/// reduced FUTA credit. The reduction rate is applied to FUTA taxable wages
+/// for that state, increasing the effective FUTA tax.
+///
+/// See IRS Schedule H instructions, Worksheet 2 — Household Employers in
+/// a Credit Reduction State.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct FutaCreditReductionState {
+    /// Two-letter postal abbreviation (e.g. "CA", "VI").
+    pub state_cd: &'static str,
+    /// Credit reduction rate in basis points (e.g. 120 = 1.2%).
+    pub reduction_rate_bps: u16,
 }

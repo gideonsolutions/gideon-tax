@@ -153,7 +153,9 @@ pub use output_schedule_d::OutputScheduleD;
 pub use output_schedule_e::OutputScheduleE;
 pub use output_schedule_eic::OutputScheduleEic;
 pub use output_schedule_f::OutputScheduleF;
-pub use output_schedule_h::OutputScheduleH;
+pub use output_schedule_h::{
+    OutputScheduleH, ScheduleHInput, UnemploymentStateTaxEntry, UnemploymentStateTaxInput,
+};
 pub use output_schedule_j::OutputScheduleJ;
 pub use output_schedule_nec::OutputScheduleNec;
 pub use output_schedule_oi::OutputScheduleOi;
