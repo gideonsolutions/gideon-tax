@@ -93,6 +93,15 @@ pub trait TaxYearRules {
     /// a Credit Reduction State.
     const FUTA_CREDIT_REDUCTION_STATES: &'static [FutaCreditReductionState];
 
+    /// HSA annual contribution limit for self-only HDHP coverage.
+    const HSA_SELF_ONLY_CONTRIBUTION_LIMIT: Usd;
+
+    /// HSA annual contribution limit for family HDHP coverage.
+    const HSA_FAMILY_CONTRIBUTION_LIMIT: Usd;
+
+    /// HSA catch-up contribution for individuals age 55 or older.
+    const HSA_CATCH_UP_CONTRIBUTION: Usd;
+
     /// Maximum foreign earned income exclusion (Form 2555, line 37).
     const F2555_MAX_FOREIGN_EARNED_INCOME_EXCLUSION: Usd;
 

@@ -57,6 +57,10 @@ impl TaxYearRules for Rules2025 {
         },
     ];
 
+    const HSA_SELF_ONLY_CONTRIBUTION_LIMIT: Usd = Usd::from_dollars(4_300);
+    const HSA_FAMILY_CONTRIBUTION_LIMIT: Usd = Usd::from_dollars(8_550);
+    const HSA_CATCH_UP_CONTRIBUTION: Usd = Usd::from_dollars(1_000);
+
     const F2555_MAX_FOREIGN_EARNED_INCOME_EXCLUSION: Usd = Usd::from_dollars(130_000);
     const F2555_HOUSING_PER_DAY_CENTS: i64 = 5_699;
     const F2555_HOUSING_FULL_YEAR: Usd = Usd::from_dollars(20_800);
