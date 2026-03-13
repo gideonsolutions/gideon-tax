@@ -1,6 +1,7 @@
 mod output_1040;
 mod output_1040_nr;
 mod output_1040_sr;
+mod output_1040_ss;
 mod output_1042_s;
 mod output_1116;
 mod output_2106;
@@ -83,6 +84,7 @@ pub use output_965_a::Output965A;
 pub use output_1040::Output1040;
 pub use output_1040_nr::Output1040Nr;
 pub use output_1040_sr::Output1040Sr;
+pub use output_1040_ss::{F1040SsInput, Output1040Ss, QualifyingChildInfo};
 pub use output_1042_s::Output1042S;
 pub use output_1116::Output1116;
 pub use output_2106::Output2106;

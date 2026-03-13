@@ -31,6 +31,7 @@ pub enum DynForm {
     F1040,
     F1040Nr,
     F1040Sr,
+    F1040Ss,
     Schedule1,
     Schedule1A,
     Schedule2,
